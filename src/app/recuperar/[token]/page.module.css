@@ -1,0 +1,98 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a0a1a 100%);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+}
+
+.invalidCard {
+  text-align: center;
+}
+
+.title {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #9ca3af;
+  font-size: 14px;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.inputField {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.inputField:focus {
+  border-color: #ef4444;
+}
+
+.inputField::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.error {
+  color: #ef4444;
+  font-size: 13px;
+  margin: 0;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+}
+
+.submitBtn.loading {
+  opacity: 0.7;
+}
+
+.retryLink {
+  display: inline-block;
+  color: #ef4444;
+  font-size: 14px;
+  text-decoration: none;
+  margin-top: 8px;
+}
+
+.retryLink:hover {
+  color: #f87171;
+  text-decoration: underline;
+}

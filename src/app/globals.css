@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes shine {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* ── Firma "Galería Láser" — perla · negro · rojo ── */
+@keyframes laser-travel {
+  0%   { top: -10%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 110%; opacity: 0; }
+}
+@keyframes laser-sweep {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  50%  { transform: scaleX(1); transform-origin: left; }
+  50.1%{ transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
+}
+
+@layer utilities {
+  .animate-shine { animation: shine var(--duration, 14s) linear infinite; }
+
+  /* Hilo láser vertical con punto viajero */
+  .laser-line { position: relative; background: rgba(219, 31, 46, 0.18); }
+  .laser-line::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    height: 24%;
+    width: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(to bottom, transparent, #db1f2e, transparent);
+    box-shadow: 0 0 12px 1px rgba(219, 31, 46, 0.6);
+    animation: laser-travel 7s ease-in-out infinite;
+  }
+  /* Subrayado láser que barre */
+  .laser-underline { transform-origin: left; animation: laser-sweep 5s ease-in-out infinite; }
+
+  /* Grano de película — textura "caro/analógico" muy sutil */
+  .grain::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%; /* Black */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    /* Bright Red */
+    --primary: 0 84% 60%; /* #ef4444 */
+    --primary-foreground: 0 0% 100%;
+    /* Pearl Grey */
+    --secondary: 210 40% 96%; /* #f1f5f9 */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 0 84% 60%; /* Red ring */
+    --radius: 0.5rem;
+
+    /* ── Tokens unificados — identidad: negro · rojo vivo · gris perla ── */
+    --bg-color: #0a0a0a;
+    --text-secondary: #a1a1aa;       /* gris perla apagado */
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --accent-blue: #ef4444;          /* remapeado a rojo para coherencia */
+    --accent-purple: #b91c1c;        /* rojo oscuro */
+    --accent-cyan: #f87171;          /* rojo claro / coral */
+  }
+ 
+  .dark {
+    /* Black */
+    --background: 0 0% 4%; /* #0a0a0a */
+    --foreground: 210 40% 98%; /* White text */
+    --card: 0 0% 4%;
+    --card-foreground: 210 40% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 210 40% 98%;
+    /* Bright Red */
+    --primary: 0 84% 60%; /* #ef4444 */
+    --primary-foreground: 0 0% 100%;
+    /* Pearl Grey but darker for dark mode surfaces? Let's use pearl grey for text or accents */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 0 84% 60%;
+    --sidebar-ring: 0 84% 60%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  /* Titulares con la fuente display (Sora) y tracking afinado */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display), var(--font-sans), sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  /* Fondo perla con profundidad: base + luz superior + sutil viñeta,
+     en vez de un gris plano. Se usa en las páginas públicas. */
+  .bg-pearl {
+    background-color: #ececed;
+    background-image:
+      radial-gradient(110% 70% at 50% -10%, rgba(255, 255, 255, 0.9), transparent 55%),
+      radial-gradient(80% 50% at 100% 0%, rgba(219, 31, 46, 0.04), transparent 50%),
+      linear-gradient(180deg, #f1f1f2 0%, #e8e8ea 45%, #e4e4e6 100%);
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-2xl;
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.04);
+  }
+  .btn-primary {
+    @apply px-6 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-md font-semibold hover:scale-105 transition-transform;
+  }
+  .btn-secondary {
+    @apply px-6 py-2 bg-transparent border border-white/20 text-white rounded-md hover:bg-white/5 transition-colors;
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-red-600;
+  }
+}

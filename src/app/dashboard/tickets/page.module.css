@@ -1,0 +1,212 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  background: linear-gradient(to right, #fff, #9ca3af);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.newBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.newBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ticketCard {
+  padding: 20px;
+  display: block;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.ticketCard:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.ticketHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ticketHeader h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: white;
+  font-weight: 600;
+}
+
+.status {
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusopen {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.statusin_progress {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.statusresolved {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.ticketDesc {
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ticketFooter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.8rem;
+}
+
+.priority {
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.priorityhigh {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.prioritymedium {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.prioritylow {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.messageCount {
+  color: var(--text-secondary);
+}
+
+.ticketDate {
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+.empty {
+  padding: 60px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  padding: 32px;
+  background: #12122a;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: white;
+}
+
+.modalClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modalClose:hover {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .newBtn {
+    width: 100%;
+    text-align: center;
+  }
+}

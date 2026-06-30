@@ -1,0 +1,369 @@
+/* ── Portal Ducklab — negro · rojo · perla ── */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0a0a0a;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 264px;
+  background: #0f0f10;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
+  transition: width 0.25s ease, transform 0.3s ease;
+}
+
+.collapsed {
+  width: 76px;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  min-height: 73px;
+}
+
+.collapsed .sidebarHeader {
+  justify-content: center;
+  padding: 18px 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.logoBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.logoText {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #f4f4f5;
+  white-space: nowrap;
+}
+
+.logoAccent {
+  color: #db1f2e;
+}
+
+.collapsed .logoText {
+  display: none;
+}
+
+/* Botón de colapso (escritorio) */
+.collapseBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.collapseBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f4f5;
+}
+
+.collapsed .logo {
+  display: none;
+}
+
+/* Botón cerrar (solo móvil) */
+.closeBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #a1a1aa;
+  cursor: pointer;
+}
+
+/* Navegación */
+.nav {
+  flex: 1;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.collapsed .nav {
+  padding: 14px 10px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  color: rgba(244, 244, 245, 0.62);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.18s, color 0.18s;
+}
+
+.collapsed .navItem {
+  justify-content: center;
+  padding: 11px;
+}
+
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f4f4f5;
+}
+
+.navItemActive {
+  background: rgba(219, 31, 46, 0.14);
+  color: #fff;
+  box-shadow: inset 3px 0 0 #db1f2e;
+}
+
+.collapsed .navItemActive {
+  box-shadow: none;
+  background: rgba(219, 31, 46, 0.18);
+}
+
+.navIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  flex-shrink: 0;
+}
+
+.navLabel {
+  white-space: nowrap;
+}
+
+.collapsed .navLabel {
+  display: none;
+}
+
+/* Footer */
+.sidebarFooter {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.collapsed .sidebarFooter {
+  padding: 14px 10px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.collapsed .userInfo {
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.userAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.userDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.collapsed .userDetails {
+  display: none;
+}
+
+.userName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f4f4f5;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userPlan {
+  font-size: 0.78rem;
+  color: #f87171;
+  margin: 0;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 16px;
+  background: rgba(219, 31, 46, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(219, 31, 46, 0.2);
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.logoutBtn:hover {
+  background: rgba(219, 31, 46, 0.2);
+}
+
+/* Área principal */
+.main {
+  flex: 1;
+  margin-left: 264px;
+  min-height: 100vh;
+  transition: margin-left 0.25s ease;
+}
+
+.layoutCollapsed .main {
+  margin-left: 76px;
+}
+
+.topBar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(15, 15, 16, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.menuBtn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #f4f4f5;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.mobileLogo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f4f4f5;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.content {
+  padding: 32px;
+  max-width: 1200px;
+}
+
+/* Overlay (móvil) */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 264px;
+    transform: translateX(-100%);
+  }
+
+  /* En móvil el colapso no aplica: siempre ancho completo off-canvas */
+  .collapsed {
+    width: 264px;
+  }
+  .collapsed .logo,
+  .collapsed .logoText,
+  .collapsed .navLabel,
+  .collapsed .userDetails {
+    display: revert;
+  }
+  .collapsed .navItem {
+    justify-content: flex-start;
+    padding: 11px 14px;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .collapseBtn {
+    display: none;
+  }
+
+  .closeBtn {
+    display: inline-flex;
+  }
+
+  .overlay {
+    display: block;
+  }
+
+  .main,
+  .layoutCollapsed .main {
+    margin-left: 0;
+  }
+
+  .topBar {
+    display: flex;
+  }
+
+  .content {
+    padding: 20px 16px;
+  }
+}
