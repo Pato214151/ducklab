@@ -1,7 +1,7 @@
 import requests
 import json
 import os
-from config import SERVER_URL
+from config import get_server_url
 
 SESSION_FILE = os.path.join(os.path.dirname(__file__), '..', 'session.json')
 KEYRING_SERVICE = 'Ducklab'
@@ -76,7 +76,7 @@ class APIClient:
 
     def logout(self):
         try:
-            self.session.post(f'{SERVER_URL}/api/auth/logout', timeout=5)
+            self.session.post(f'{get_server_url()}/api/auth/logout', timeout=2)
         except Exception:
             pass
         self.clear_session()
@@ -84,7 +84,7 @@ class APIClient:
     def login(self, email, password):
         """Login via API"""
         self.session.headers.pop('Cookie', None)
-        url = f'{SERVER_URL}/api/auth/login'
+        url = f'{get_server_url()}/api/auth/login'
         payload = {'email': email, 'password': password}
         resp = self.session.post(url, json=payload, allow_redirects=False, timeout=10)
         if resp.status_code == 200:
@@ -97,15 +97,15 @@ class APIClient:
         return resp
 
     def get_dashboard(self):
-        resp = self.session.get(f'{SERVER_URL}/dashboard', allow_redirects=False)
+        resp = self.session.get(f'{get_server_url()}/dashboard', allow_redirects=False)
         return resp
 
     def get_downloads(self):
-        resp = self.session.get(f'{SERVER_URL}/dashboard/downloads', allow_redirects=False)
+        resp = self.session.get(f'{get_server_url()}/dashboard/downloads', allow_redirects=False)
         return resp
 
     def download_file(self, download_id, save_path):
-        url = f'{SERVER_URL}/api/downloads/{download_id}'
+        url = f'{get_server_url()}/api/downloads/{download_id}'
         resp = self.session.get(url, stream=True, allow_redirects=False)
         if resp.status_code == 200:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
@@ -142,7 +142,7 @@ class APIClient:
 
     def get_my_apps(self):
         """Get list of apps assigned to the logged-in user"""
-        resp = self.session.get(f'{SERVER_URL}/api/my-apps', allow_redirects=False)
+        resp = self.session.get(f'{get_server_url()}/api/my-apps', allow_redirects=False)
         if resp.status_code == 200:
             try:
                 return resp.json()
@@ -152,7 +152,7 @@ class APIClient:
 
     def is_authenticated(self):
         try:
-            resp = self.session.get(f'{SERVER_URL}/api/me', allow_redirects=False, timeout=5)
+            resp = self.session.get(f'{get_server_url()}/api/me', allow_redirects=False, timeout=5)
             return resp.status_code == 200
         except Exception:
             return False
@@ -160,7 +160,7 @@ class APIClient:
     def get_me(self):
         """Datos del usuario logueado (name, email, plan, ...)."""
         try:
-            resp = self.session.get(f'{SERVER_URL}/api/me', allow_redirects=False)
+            resp = self.session.get(f'{get_server_url()}/api/me', allow_redirects=False)
             if resp.status_code == 200:
                 return resp.json()
         except Exception:

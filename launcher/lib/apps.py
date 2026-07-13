@@ -95,16 +95,29 @@ def find_executable(root, prefer=None):
                 exes.append(os.path.join(dirpath, fn))
     if not exes:
         return None
+
+    # Excluir desinstaladores
+    exes = [e for e in exes if 'unins' not in os.path.basename(e).lower()]
+
     # Preferir uno cuyo nombre coincida con la app (ej. PocitosAzufrados.exe)
     if prefer:
         key = ''.join(ch for ch in prefer.lower() if ch.isalnum())
-        for e in exes:
-            name = ''.join(ch for ch in os.path.basename(e).lower() if ch.isalnum())
-            if key and key[:6] in name:
-                return e
-    # Si no, el más superficial y que no parezca desinstalador
-    exes.sort(key=lambda p: (len(p.split(os.sep)), 'unins' in os.path.basename(p).lower()))
-    return exes[0]
+        if len(key) >= 4:  # Mínimo 4 chars para evitar colisiones
+            for e in exes:
+                name = ''.join(ch for ch in os.path.basename(e).lower() if ch.isalnum())
+                # Coincidir al menos 8 chars del nombre para ser más preciso
+                if len(key) >= 8 and key[:8] in name:
+                    return e
+                elif len(key) >= 4 and key in name[:12]:  # 12 chars de tolerancia
+                    return e
+
+    # Si no hay coincidencia, el más superficial (menos subdirectorios)
+    # y que no parezca desinstalador
+    if exes:
+        exes.sort(key=lambda p: (len(p.split(os.sep)), 'unins' in os.path.basename(p).lower()))
+        return exes[0]
+
+    return None
 
 
 def install_zip(app_id, zip_path, version, app_name=None):
