@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { addMessageAction } from '@/lib/actions/tickets'
 import { ShineCard } from '@/components/ui/shine-card'
 import styles from './page.module.css'
@@ -35,7 +36,7 @@ export default function TicketDetailClient({ ticket, userId, userName }) {
       <div className={styles.header}>
         <div>
           <div className={styles.breadcrumb}>
-            <a href="/dashboard/tickets">← Tickets</a>
+            <Link href="/dashboard/tickets">← Tickets</Link>
           </div>
           <h1 className={styles.title}>{ticket.subject}</h1>
           <div className={styles.meta}>

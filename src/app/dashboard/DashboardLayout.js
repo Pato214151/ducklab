@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { LayoutDashboard, Monitor, Download, LifeBuoy, CreditCard, Settings, Wrench, ScrollText, X, PanelLeftClose, PanelLeftOpen, LogOut, Menu } from 'lucide-react'
@@ -26,13 +26,10 @@ export default function DashboardLayout({ children, user }) {
   const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false) // off-canvas en móvil
-  const [collapsed, setCollapsed] = useState(false)      // riel de iconos en escritorio
-
-  // Recordar la preferencia de colapso entre sesiones.
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    setCollapsed(localStorage.getItem('ducklab.sidebar') === 'collapsed')
-  }, [])
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem('ducklab.sidebar') === 'collapsed'
+  })
 
   const toggleCollapse = () => {
     setCollapsed(prev => {

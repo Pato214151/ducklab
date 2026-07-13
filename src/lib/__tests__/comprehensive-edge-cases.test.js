@@ -431,8 +431,8 @@ describe('Rate limit edge cases', () => {
     rl._clearAllRateLimits()
   })
 
-  it('max=0 blocks every request', () => {
-    const { checkRateLimit } = require('../rate-limit')
+  it('max=0 blocks every request', async () => {
+    const { checkRateLimit } = await import('../rate-limit')
     const r1 = checkRateLimit('test', { max: 0 })
     expect(r1.allowed).toBe(false)
     expect(r1.remaining).toBe(0)
@@ -440,13 +440,13 @@ describe('Rate limit edge cases', () => {
     expect(r2.allowed).toBe(false)
   })
 
-  it('resetRateLimit on non-existent key does not throw', () => {
-    const { resetRateLimit } = require('../rate-limit')
+  it('resetRateLimit on non-existent key does not throw', async () => {
+    const { resetRateLimit } = await import('../rate-limit')
     expect(() => resetRateLimit('nonexistent')).not.toThrow()
   })
 
-  it('remembers remaining count after reset', () => {
-    const { checkRateLimit, resetRateLimit } = require('../rate-limit')
+  it('remembers remaining count after reset', async () => {
+    const { checkRateLimit, resetRateLimit } = await import('../rate-limit')
     for (let i = 0; i < 3; i++) checkRateLimit('ip', { max: 5 })
     expect(checkRateLimit('ip', { max: 5 }).remaining).toBe(1)
     resetRateLimit('ip')
@@ -505,56 +505,56 @@ describe('Webhook security', () => {
    ═══════════════════════════════════════════ */
 
 describe('Zod schema edge cases', () => {
-  it('TicketSchema rejects short subject', () => {
-    const { TicketSchema } = require('../definitions')
+  it('TicketSchema rejects short subject', async () => {
+    const { TicketSchema } = await import('../definitions')
     const result = TicketSchema.safeParse({ subject: 'ab', description: 'valid description here', priority: 'low' })
     expect(result.success).toBe(false)
   })
 
-  it('TicketSchema rejects long subject', () => {
-    const { TicketSchema } = require('../definitions')
+  it('TicketSchema rejects long subject', async () => {
+    const { TicketSchema } = await import('../definitions')
     const result = TicketSchema.safeParse({ subject: 'x'.repeat(201), description: 'valid description here', priority: 'low' })
     expect(result.success).toBe(false)
   })
 
-  it('TicketSchema rejects short description', () => {
-    const { TicketSchema } = require('../definitions')
+  it('TicketSchema rejects short description', async () => {
+    const { TicketSchema } = await import('../definitions')
     const result = TicketSchema.safeParse({ subject: 'Valid Subject', description: 'short', priority: 'low' })
     expect(result.success).toBe(false)
   })
 
-  it('MessageSchema rejects empty text', () => {
-    const { MessageSchema } = require('../definitions')
+  it('MessageSchema rejects empty text', async () => {
+    const { MessageSchema } = await import('../definitions')
     const result = MessageSchema.safeParse({ text: '' })
     expect(result.success).toBe(false)
   })
 
-  it('MessageSchema rejects whitespace-only text', () => {
-    const { MessageSchema } = require('../definitions')
+  it('MessageSchema rejects whitespace-only text', async () => {
+    const { MessageSchema } = await import('../definitions')
     const result = MessageSchema.safeParse({ text: '   ' })
     expect(result.success).toBe(false)
   })
 
-  it('ResetPasswordSchema rejects mismatched passwords', () => {
-    const { ResetPasswordSchema } = require('../definitions')
+  it('ResetPasswordSchema rejects mismatched passwords', async () => {
+    const { ResetPasswordSchema } = await import('../definitions')
     const result = ResetPasswordSchema.safeParse({ token: 'abc', password: '123456', confirmPassword: '654321' })
     expect(result.success).toBe(false)
   })
 
-  it('ResetPasswordSchema rejects short password', () => {
-    const { ResetPasswordSchema } = require('../definitions')
+  it('ResetPasswordSchema rejects short password', async () => {
+    const { ResetPasswordSchema } = await import('../definitions')
     const result = ResetPasswordSchema.safeParse({ token: 'abc', password: '12345', confirmPassword: '12345' })
     expect(result.success).toBe(false)
   })
 
-  it('LoginSchema rejects non-email strings', () => {
-    const { LoginSchema } = require('../definitions')
+  it('LoginSchema rejects non-email strings', async () => {
+    const { LoginSchema } = await import('../definitions')
     const result = LoginSchema.safeParse({ email: 'not-an-email', password: 'password' })
     expect(result.success).toBe(false)
   })
 
-  it('LoginSchema trims whitespace around email before validating', () => {
-    const { LoginSchema } = require('../definitions')
+  it('LoginSchema trims whitespace around email before validating', async () => {
+    const { LoginSchema } = await import('../definitions')
     const result = LoginSchema.safeParse({ email: '  test@test.com  ', password: 'pass' })
     expect(result.success).toBe(true)
   })

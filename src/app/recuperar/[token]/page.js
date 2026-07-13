@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { getPasswordResetByToken } from '@/lib/db'
 import ResetForm from './ResetForm'
 import styles from './page.module.css'
@@ -22,7 +23,7 @@ export default async function ResetPage({ params }) {
             <p className={styles.subtitle}>
               Este enlace de recuperación ha expirado o ya fue utilizado. Solicita uno nuevo.
             </p>
-            <a href="/recuperar" className={styles.retryLink}>Solicitar nuevo enlace</a>
+            <Link href="/recuperar" className={styles.retryLink}>Solicitar nuevo enlace</Link>
           </>
         )}
       </div>

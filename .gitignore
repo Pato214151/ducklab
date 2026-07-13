@@ -65,4 +65,6 @@ launcher-artifacts/
 # Python bytecode
 __pycache__/
 *.pyc
-admin-reset.txt
+
+# Claude Code local config
+.claude/settings.local.json

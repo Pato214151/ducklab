@@ -1,5 +1,5 @@
--- JR Dev Platform — PostgreSQL Schema
--- Run: psql -d jrdev < schema.sql
+-- Ducklab — PostgreSQL Schema
+-- Run: psql -d ducklab < schema.sql
 
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
