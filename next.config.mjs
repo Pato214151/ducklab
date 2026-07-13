@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-// CSP pragmática: permite lo que Next.js necesita (inline + eval para HMR) pero
-// bloquea fuentes externas de scripts, framing, objetos y base-uri.
+// CSP: Next.js requiere 'unsafe-inline' para estilos inline (Tailwind, componentes).
+// 'unsafe-eval' se quita porque Next.js no lo necesita en producción.
+// En desarrollo (HMR) el browser maneja eval; en prod no hay HMR.
+// Si necesitas nonce, usa el template de Next.js docs.
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -11,7 +13,7 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "script-src 'self' 'unsafe-inline'",
   "connect-src 'self' https:",
 ].join('; ')
 

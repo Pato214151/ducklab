@@ -73,7 +73,6 @@ export async function sendCriticalErrorAlerts({ system, error, adminEmails = [],
       html: SHELL(`
         <h2 style="margin:0 0 8px;color:#f87171">🔴 Error crítico en ${name}</h2>
         <p style="color:#e5e7eb">${msg}</p>
-        ${error?.stacktrace ? `<pre style="background:#000;border:1px solid #222;border-radius:8px;padding:12px;font-size:12px;color:#a1a1aa;overflow:auto">${error.stacktrace}</pre>` : ''}
         ${link ? `<p style="margin:24px 0">${BTN(link, 'Ver y resolver')}</p>` : ''}
         <p style="color:#71717a;font-size:13px">Te avisamos apenas tu sistema lo reportó — antes de que el cliente llame.</p>
       `),
