@@ -131,6 +131,10 @@ class LoginWindow(QWidget):
                     item.widget().deleteLater()
 
     def _setup_login_form(self):
+        layout = self.layout()
+        if layout is None:
+            layout = QVBoxLayout()
+            self.setLayout(layout)
 
         # Card wrapper
         card = QFrame()
@@ -208,9 +212,7 @@ class LoginWindow(QWidget):
         card_layout.addWidget(self.login_btn)
 
         card.setLayout(card_layout)
-
         layout.addWidget(card)
-        self.setLayout(layout)
 
     def _do_login(self):
         email = self.email_input.text().strip()

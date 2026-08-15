@@ -76,7 +76,7 @@ class APIClient:
 
     def logout(self):
         try:
-            self.session.post(f'{get_server_url()}/api/auth/logout', timeout=2)
+            self.session.post(f'{get_server_url()}/api/auth/logout', timeout=5)
         except Exception:
             pass
         self.clear_session()

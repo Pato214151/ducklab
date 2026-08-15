@@ -3,22 +3,10 @@ import json
 import zipfile
 import shutil
 
-from config import DEFAULT_LIBRARY, SETTINGS_FILE, DUCKLAB_HOME
+from config import DEFAULT_LIBRARY, SETTINGS_FILE, DUCKLAB_HOME, _load_settings, _save_settings
 
 
 # ───────────────────────── Ajustes / biblioteca ─────────────────────────
-def _load_settings():
-    try:
-        with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception:
-        return {}
-
-
-def _save_settings(s):
-    os.makedirs(DUCKLAB_HOME, exist_ok=True)
-    with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(s, f, indent=2)
 
 
 def library_dir():

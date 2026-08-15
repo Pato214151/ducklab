@@ -24,15 +24,30 @@ DUCK_ICO = resource_path('assets/duck.ico')
 
 
 # ───────────────────────── Servidor / Portal URL ─────────────────────────
+_settings_cache = None
+
 def _load_settings():
-    """Carga settings.json (puede fallar si no existe)."""
+    """Carga settings.json (cacheada en memoria)."""
+    global _settings_cache
+    if _settings_cache is not None:
+        return _settings_cache
     try:
         import json
-        os.makedirs(DUCKLAB_HOME, exist_ok=True)
         with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            _settings_cache = json.load(f)
     except Exception:
-        return {}
+        _settings_cache = {}
+    return _settings_cache
+
+
+def _save_settings(s):
+    """Guarda settings.json y actualiza la caché."""
+    global _settings_cache
+    import json
+    os.makedirs(DUCKLAB_HOME, exist_ok=True)
+    with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(s, f, indent=2)
+    _settings_cache = s
 
 
 def get_server_url():
@@ -42,12 +57,9 @@ def get_server_url():
 
 def set_server_url(url):
     """Guarda la URL del portal en settings.json."""
-    import json
-    os.makedirs(DUCKLAB_HOME, exist_ok=True)
     s = _load_settings()
     s['server_url'] = url.rstrip('/')
-    with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(s, f, indent=2)
+    _save_settings(s)
 
 
 def is_server_url_set():

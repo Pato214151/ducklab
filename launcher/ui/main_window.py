@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, pyqtSignal, QObject, QThread, QUrl
 from PyQt5.QtGui import QPixmap
 
-from config import SERVER_URL, DUCK_PNG, DUCKLAB_HOME
+from config import get_server_url, DUCK_PNG, DUCKLAB_HOME
 from lib.apps import (
     get_app_dir, get_manifest, is_app_installed, installed_version,
     install_zip, library_dir, set_library_dir, library_is_set,
@@ -501,7 +501,7 @@ class MainWindow(QWidget):
             return
         if self._state(self.current) == 'open':
             # Fallback: abrir el mismo sistema en el navegador real del cliente.
-            webbrowser.open(self.current.get('externalUrl') or f'{SERVER_URL}/dashboard/sistemas')
+            webbrowser.open(self.current.get('externalUrl') or f'{get_server_url()}/dashboard/sistemas')
         else:
             m = get_manifest(self.current.get('id')) or {}
             folder = m.get('install_dir') or get_app_dir(self.current.get('id'))
