@@ -21,7 +21,7 @@ export default async function SistemasPage() {
           <p className="mt-1 text-gray-400">Accede a tus sistemas y revisa su estado en tiempo real.</p>
         </div>
         <a
-          href="https://github.com/Pato214151/jrdev-launcher/releases/download/v1.1.0/DucklabLauncher-Setup.exe"
+          href="https://github.com/Pato214151/jrdev-launcher/releases/latest/download/DucklabLauncher-Setup.exe"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_rgba(239,68,68,0.25)] transition hover:bg-red-500"

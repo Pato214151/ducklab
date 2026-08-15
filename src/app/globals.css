@@ -131,14 +131,14 @@
 }
 
 @layer utilities {
-  /* Fondo perla con profundidad: base + luz superior + sutil viñeta,
-     en vez de un gris plano. Se usa en las páginas públicas. */
+  /* Fondo "gris California": concreto cálido con profundidad — luz superior,
+     brisa roja en la esquina y viñeta suave. Se usa en las páginas públicas. */
   .bg-pearl {
-    background-color: #ececed;
+    background-color: #e8e6e3;
     background-image:
-      radial-gradient(110% 70% at 50% -10%, rgba(255, 255, 255, 0.9), transparent 55%),
-      radial-gradient(80% 50% at 100% 0%, rgba(219, 31, 46, 0.04), transparent 50%),
-      linear-gradient(180deg, #f1f1f2 0%, #e8e8ea 45%, #e4e4e6 100%);
+      radial-gradient(110% 70% at 50% -10%, rgba(255, 255, 255, 0.95), transparent 55%),
+      radial-gradient(80% 50% at 100% 0%, rgba(219, 31, 46, 0.05), transparent 50%),
+      linear-gradient(180deg, #eeecea 0%, #e5e3e0 45%, #dfddda 100%);
   }
 }
 

@@ -3,12 +3,10 @@ import { decrypt } from '@/lib/session'
 import { cookies } from 'next/headers'
 
 const protectedRoutes = ['/dashboard']
-const publicRoutes = ['/login', '/planes', '/', '/servicios', '/portafolio', '/contacto']
 
 export async function proxy(request) {
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route))
-  const isPublicRoute = publicRoutes.some(route => path === route)
 
   const cookieStore = await cookies()
   const sessionCookie = cookieStore.get('session')?.value

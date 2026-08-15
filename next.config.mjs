@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 
 // CSP: Next.js requiere 'unsafe-inline' para estilos inline (Tailwind, componentes).
-// 'unsafe-eval' se quita porque Next.js no lo necesita en producción.
-// En desarrollo (HMR) el browser maneja eval; en prod no hay HMR.
-// Si necesitas nonce, usa el template de Next.js docs.
+// 'unsafe-eval' solo en desarrollo para HMR (Turbopack lo usa internamente).
+// En producción se omite para mayor seguridad.
+const isDev = process.env.NODE_ENV !== 'production'
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -13,7 +13,7 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
   "connect-src 'self' https:",
 ].join('; ')
 
