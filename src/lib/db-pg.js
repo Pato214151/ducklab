@@ -17,8 +17,21 @@ function toSnakeKey(key) {
   return key.replace(/([A-Z])/g, '_$1').toLowerCase()
 }
 
+// Columnas actualizables por tabla. Las keys del objeto `updates` acaban
+// interpoladas en el SQL, así que sin esta whitelist una key maliciosa
+// (p.ej. "password = 'x' --") se colaría en la consulta.
+const UPDATABLE_COLUMNS = {
+  systems: new Set([
+    'name', 'icon', 'type', 'description', 'fileName', 'fileSize', 'version',
+    'status', 'externalUrl', 'runbook', 'licenseActive', 'gitRepo', 'gitBranch',
+    'lastCommitSha', 'lastCommitMsg', 'lastCommitDate',
+  ]),
+}
+
 function buildUpdateQuery(table, id, updates) {
-  const entries = Object.entries(updates).filter(([_, v]) => v !== undefined)
+  const allowed = UPDATABLE_COLUMNS[table]
+  if (!allowed) throw new Error(`buildUpdateQuery: tabla sin whitelist de columnas: ${table}`)
+  const entries = Object.entries(updates).filter(([k, v]) => v !== undefined && allowed.has(k))
   if (entries.length === 0) return null
   const setClauses = entries.map(([key], i) => `${toSnakeKey(key)} = $${i + 1}`)
   const values = entries.map(([_, value]) => value)

@@ -35,8 +35,8 @@ export const NewSystemSchema = z.object({
   type: z.enum(['online', 'desktop']),
   description: z.string().trim().max(500).optional(),
   icon: z.string().trim().max(8).optional(),
-  externalUrl: z.string().trim().max(300).optional(),
-  gitRepo: z.string().trim().max(300).optional(),
+  externalUrl: z.string().trim().url('Debe ser una URL válida (https://…)').max(300).optional(),
+  gitRepo: z.string().trim().url('Debe ser una URL válida (https://…)').max(300).optional(),
 })
 
 export const NewDownloadSchema = z.object({

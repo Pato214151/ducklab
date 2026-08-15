@@ -54,6 +54,15 @@ export async function logout() {
 }
 
 export async function requestPasswordReset(state, formData) {
+  // Sin límite, un atacante puede inundar un buzón ajeno con correos de reset
+  // (y quemar la cuota de Resend). Mismo mensaje neutro que el resto del flujo.
+  const hdrs = await headers()
+  const ip = hdrs.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  const rl = checkRateLimit(`pw-reset:${ip}`, { max: 3, windowMs: 15 * 60 * 1000 })
+  if (!rl.allowed) {
+    return { success: true, message: 'Si el correo existe, recibirás instrucciones para restablecer tu contraseña.' }
+  }
+
   const validated = RequestResetSchema.safeParse({
     email: formData.get('email'),
   })

@@ -3,6 +3,17 @@
 
 const buckets = new Map()
 
+// Barrido periódico: sin esto el Map crece sin límite (una entrada por IP vista).
+// unref() evita que el intervalo mantenga vivo el proceso.
+const SWEEP_INTERVAL_MS = 5 * 60 * 1000
+const sweeper = setInterval(() => {
+  const now = Date.now()
+  for (const [key, entry] of buckets) {
+    if (now >= entry.resetAt) buckets.delete(key)
+  }
+}, SWEEP_INTERVAL_MS)
+sweeper.unref?.()
+
 /**
  * @param {string} key - identificador (p.ej. `login:<ip>`)
  * @param {{max?: number, windowMs?: number}} opts

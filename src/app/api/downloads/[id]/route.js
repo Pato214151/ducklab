@@ -20,7 +20,14 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
-  const filePath = path.join(process.cwd(), 'data', 'files', download.fileName)
+  // El fileName viene de la BD (lo escribe el admin), pero aun así se valida:
+  // path.resolve + prefijo garantizan que nunca se lea fuera de data/files
+  // (un fileName con ../ o ruta absoluta se rechaza en vez de escapar del directorio).
+  const filesDir = path.resolve(process.cwd(), 'data', 'files')
+  const filePath = path.resolve(filesDir, download.fileName)
+  if (!filePath.startsWith(filesDir + path.sep)) {
+    return NextResponse.json({ error: 'Archivo no encontrado' }, { status: 404 })
+  }
 
   // Si el instalador real aún no está subido, NO generamos un archivo falso
   // (eso descargaba un .exe que en realidad era un bloc de notas). Avisamos claro.

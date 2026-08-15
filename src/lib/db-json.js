@@ -378,6 +378,11 @@ function readDb() {
     try {
       data = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'))
     } catch {
+      // JSON corrupto: preservar el archivo dañado antes de reemplazarlo con el
+      // seed — así los datos reales son recuperables a mano y no se pierden en silencio.
+      const backup = `${DB_PATH}.corrupt-${Date.now()}`
+      try { fs.copyFileSync(DB_PATH, backup) } catch { /* el original ya no es legible */ }
+      console.error(`[db-json] db.json corrupto; copia guardada en ${backup}, reiniciando con seed`)
       data = JSON.parse(JSON.stringify(defaultData))
     }
   }
@@ -389,7 +394,11 @@ function readDb() {
 
 function writeDb(data) {
   ensureDir()
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8')
+  // Escritura atómica: tmp + rename. Si el proceso muere a mitad de escritura,
+  // el db.json anterior queda intacto (nunca un archivo a medias).
+  const tmp = `${DB_PATH}.tmp`
+  fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf-8')
+  fs.renameSync(tmp, DB_PATH)
 }
 
 // ID numérico único y siempre creciente, robusto ante colisiones de Date.now().
