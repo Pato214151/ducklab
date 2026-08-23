@@ -58,8 +58,14 @@ function findPalm(mesh, Vector3) {
   return new Vector3(cx / n, cy / n, cz / n);
 }
 
-export default function RoboticArm({ apiRef, perspective, sceneRef }) {
+export default function RoboticArm({ apiRef, perspective, sceneRef, onReady }) {
   const canvasRef = useRef(null);
+  // Se guarda en un ref para no meterlo en las dependencias del efecto:
+  // una función nueva en cada render recargaría three.js y el modelo entero.
+  const onReadyRef = useRef(onReady);
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -172,6 +178,7 @@ export default function RoboticArm({ apiRef, perspective, sceneRef }) {
           );
           pivot.add(arm);
           canvas.style.opacity = '1';
+          onReadyRef.current?.();
         },
         undefined,
         () => {} // si el modelo no carga, el hero funciona igual sin brazo

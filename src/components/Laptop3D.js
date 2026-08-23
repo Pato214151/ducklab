@@ -79,9 +79,11 @@ export default function Laptop3D({ lang = 'es' }) {
   const lidRef = useRef(null);
   const hotspotsRef = useRef(null);
   const armApi = useRef(null);
+  // El bucle se duerme solo; esto deja despertarlo desde fuera del efecto.
+  const wakeRef = useRef(null);
   const [touched, setTouched] = useState(false);
-  // El brazo es un adorno de 816 KB + WebGL: sólo en pantallas grandes y
-  // si el usuario no pidió menos movimiento.
+  // El brazo son 816 KB + WebGL, cargados en idle. Se omite si el usuario
+  // pidió menos movimiento o si el equipo es de gama muy baja.
   const [showArm, setShowArm] = useState(false);
 
   // Todo el estado de animación vive en un ref: el bucle rAF escribe
@@ -96,6 +98,7 @@ export default function Laptop3D({ lang = 'es' }) {
     userZoom: 1,
     fit: 1,
     dragging: false,
+    visible: true,
     active: false,   // el usuario ya agarró el modelo → la rueda hace zoom
     last: { x: 0, y: 0 },
     reduced: false,
@@ -110,9 +113,12 @@ export default function Laptop3D({ lang = 'es' }) {
   }, []);
 
   useEffect(() => {
-    const big = window.matchMedia('(min-width: 1024px)');
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const decide = () => setShowArm(big.matches && !calm.matches);
+    // Ahora que el bucle se duerme, el brazo no cuesta nada en reposo y
+    // también se muestra en móvil. Sólo se salta en equipos de gama muy
+    // baja, donde el contexto WebGL sí pesa.
+    const flojo = (navigator.deviceMemory ?? 8) < 4 || (navigator.hardwareConcurrency ?? 8) < 4;
+    const decide = () => setShowArm(!calm.matches && !flojo);
 
     // three.js es un chunk aparte de ~660 KB: se pide cuando el navegador
     // está ocioso, para no competir con el primer pintado del hero ni con
@@ -121,12 +127,10 @@ export default function Laptop3D({ lang = 'es' }) {
       ? window.requestIdleCallback(decide, { timeout: 2500 })
       : window.setTimeout(decide, 1200);
 
-    big.addEventListener('change', decide);
     calm.addEventListener('change', decide);
     return () => {
       if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
       else window.clearTimeout(idle);
-      big.removeEventListener('change', decide);
       calm.removeEventListener('change', decide);
     };
   }, []);
@@ -146,6 +150,7 @@ export default function Laptop3D({ lang = 'es' }) {
     const fitToBox = () => {
       const { width, height } = scene.getBoundingClientRect();
       a.fit = clamp(Math.min(width / 880, height / 700), 0.32, 1);
+      startLoop();
     };
     fitToBox();
     const observer = new ResizeObserver(fitToBox);
@@ -158,10 +163,20 @@ export default function Laptop3D({ lang = 'es' }) {
     }
 
     // La tapa se abre un instante después de que el equipo entre en escena.
-    const lidTimer = window.setTimeout(() => { a.tgt.lid = REST.lid; }, a.reduced ? 0 : 380);
+    const lidTimer = window.setTimeout(() => { a.tgt.lid = REST.lid; startLoop(); }, a.reduced ? 0 : 380);
 
-    // ── Bucle de animación: interpolación exponencial hacia el objetivo.
-    const frame = () => {
+    // ── Bucle de animación ──
+    // Sólo corre mientras algo se mueve. En cuanto la pose se asienta se
+    // detiene solo y no vuelve hasta que haya interacción: dejarlo girando
+    // a 60 fps contra un objetivo fijo era gasto puro, y en móvil —donde
+    // ni siquiera hay cursor que seguir— se notaba como lentitud.
+    const EPS = 0.02;
+    // Declaradas con `function` a propósito: se izan, y así `fitToBox()`
+    // —que corre más arriba— ya puede despertar el bucle.
+    function startLoop() {
+      if (!a.raf && a.visible) a.raf = window.requestAnimationFrame(frame);
+    }
+    function frame() {
       a.tgt.rx = clamp(a.drag.rx + a.follow.rx, RX_MIN, RX_MAX);
       a.tgt.ry = a.drag.ry + a.follow.ry;
       a.tgt.zoom = a.fit * a.userZoom;
@@ -189,15 +204,35 @@ export default function Laptop3D({ lang = 'es' }) {
       // dos capas nunca queden desfasadas.
       armApi.current?.render(a.cur.rx, a.cur.ry, a.cur.zoom);
 
+      const quieto =
+        !a.dragging &&
+        Math.abs(a.tgt.rx - a.cur.rx) < EPS &&
+        Math.abs(a.tgt.ry - a.cur.ry) < EPS &&
+        Math.abs(a.tgt.lid - a.cur.lid) < EPS &&
+        Math.abs(a.tgt.zoom - a.cur.zoom) < EPS / 100;
+
+      if (quieto) {
+        // Se cuadra en el objetivo exacto para no quedar a medio píxel.
+        a.cur.rx = a.tgt.rx;
+        a.cur.ry = a.tgt.ry;
+        a.cur.lid = a.tgt.lid;
+        a.cur.zoom = a.tgt.zoom;
+        a.raf = 0;
+        return;
+      }
+
       a.raf = window.requestAnimationFrame(frame);
-    };
-    a.raf = window.requestAnimationFrame(frame);
+    }
+    a.visible = true;
+    wakeRef.current = startLoop;
+    startLoop();
 
     // Con WebGL en juego, seguir pintando el hero fuera de pantalla es
     // gasto puro de batería: el bucle se pausa al salir del viewport.
     const visibility = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        if (!a.raf) a.raf = window.requestAnimationFrame(frame);
+      a.visible = entry.isIntersecting;
+      if (a.visible) {
+        startLoop();
       } else if (a.raf) {
         window.cancelAnimationFrame(a.raf);
         a.raf = 0;
@@ -212,6 +247,7 @@ export default function Laptop3D({ lang = 'es' }) {
       a.active = true;
       a.last = { x: e.clientX, y: e.clientY };
       setTouched(true);
+      startLoop();
       scene.setPointerCapture?.(e.pointerId);
     };
     const onPointerMove = (e) => {
@@ -221,6 +257,7 @@ export default function Laptop3D({ lang = 'es' }) {
       a.last = { x: e.clientX, y: e.clientY };
       a.drag.ry += dx * 0.38;
       a.drag.rx = clamp(a.drag.rx - dy * 0.26, RX_MIN, RX_MAX);
+      startLoop();
     };
     const endDrag = (e) => {
       if (!a.dragging) return;
@@ -241,6 +278,7 @@ export default function Laptop3D({ lang = 'es' }) {
       const ny = clamp((e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2), -1, 1);
       a.follow.ry = nx * FOLLOW_RY;
       a.follow.rx = -ny * FOLLOW_RX;
+      startLoop();
     };
     window.addEventListener('pointermove', onWindowMove, { passive: true });
 
@@ -254,6 +292,7 @@ export default function Laptop3D({ lang = 'es' }) {
       e.preventDefault();
       a.userZoom = clamp(a.userZoom * (1 - e.deltaY * 0.0014), ZOOM_MIN, ZOOM_MAX);
       setTouched(true);
+      startLoop();
     };
     scene.addEventListener('wheel', onWheel, { passive: false });
 
@@ -261,7 +300,7 @@ export default function Laptop3D({ lang = 'es' }) {
     const onPointerLeave = () => { if (!a.dragging) a.active = false; };
     scene.addEventListener('pointerleave', onPointerLeave);
 
-    const onDoubleClick = () => resetPose();
+    const onDoubleClick = () => { resetPose(); startLoop(); };
     scene.addEventListener('dblclick', onDoubleClick);
 
     const onMotionChange = (e) => { a.reduced = e.matches; };
@@ -272,6 +311,7 @@ export default function Laptop3D({ lang = 'es' }) {
       window.clearTimeout(lidTimer);
       observer.disconnect();
       visibility.disconnect();
+      wakeRef.current = null;
       scene.removeEventListener('pointerdown', onPointerDown);
       scene.removeEventListener('pointermove', onPointerMove);
       scene.removeEventListener('pointerup', endDrag);
@@ -299,7 +339,16 @@ export default function Laptop3D({ lang = 'es' }) {
         }
       >
         {/* Capa WebGL con el brazo, detrás del portátil CSS */}
-        {showArm && <RoboticArm apiRef={armApi} perspective={PERSPECTIVE} sceneRef={sceneRef} />}
+        {showArm && (
+          <RoboticArm
+            apiRef={armApi}
+            perspective={PERSPECTIVE}
+            sceneRef={sceneRef}
+            /* El modelo llega tarde: si el bucle ya se durmió, hay que
+               pedirle un fotograma o el brazo nunca se pintaría. */
+            onReady={() => wakeRef.current?.()}
+          />
+        )}
 
         <div
           ref={rigRef}

@@ -466,6 +466,25 @@
   .hotspot { display: none; }
 }
 
+/* En móvil se recortan los efectos que más cuestan de componer:
+   desenfoques, brillos grandes y animaciones de opacidad continuas. */
+@media (max-width: 767px) {
+  .glow { filter: none; }
+  .shadow { filter: blur(14px); }
+  .ringOuter,
+  .ringInner {
+    filter: none;
+    animation: none;
+    opacity: 0.7;
+  }
+  .ringOuter { box-shadow: 0 0 26px rgba(255, 59, 66, 0.75); }
+  .ringInner { box-shadow: 0 0 16px rgba(255, 59, 66, 0.6); }
+  .tip { backdrop-filter: none; }
+  .keyboard { box-shadow: none; }
+  .lidFront { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+  .screen { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hotspot::after { animation: none; }
 }
