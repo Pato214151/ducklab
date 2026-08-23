@@ -36,6 +36,18 @@ const FOLLOW_RX = 7;
 
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
+// Safari 13 y anteriores sólo tienen addListener/removeListener en
+// MediaQueryList. Sin esto, un addEventListener lanza y se cae el efecto
+// entero: el portátil quedaría congelado en la pose de arranque.
+function onMedia(mq, handler) {
+  if (mq.addEventListener) {
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }
+  mq.addListener(handler);
+  return () => mq.removeListener(handler);
+}
+
 // Debe coincidir con `perspective` de .scene en el módulo CSS: es lo que
 // permite que la capa WebGL del brazo comparta proyección con el CSS 3D.
 const PERSPECTIVE = 1700;
@@ -127,11 +139,11 @@ export default function Laptop3D({ lang = 'es' }) {
       ? window.requestIdleCallback(decide, { timeout: 2500 })
       : window.setTimeout(decide, 1200);
 
-    calm.addEventListener('change', decide);
+    const offCalm = onMedia(calm, decide);
     return () => {
       if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
       else window.clearTimeout(idle);
-      calm.removeEventListener('change', decide);
+      offCalm();
     };
   }, []);
 
@@ -303,8 +315,7 @@ export default function Laptop3D({ lang = 'es' }) {
     const onDoubleClick = () => { resetPose(); startLoop(); };
     scene.addEventListener('dblclick', onDoubleClick);
 
-    const onMotionChange = (e) => { a.reduced = e.matches; };
-    motionQuery.addEventListener('change', onMotionChange);
+    const offMotion = onMedia(motionQuery, (e) => { a.reduced = e.matches; });
 
     return () => {
       window.cancelAnimationFrame(a.raf);
@@ -320,7 +331,7 @@ export default function Laptop3D({ lang = 'es' }) {
       scene.removeEventListener('dblclick', onDoubleClick);
       scene.removeEventListener('pointerleave', onPointerLeave);
       window.removeEventListener('pointermove', onWindowMove);
-      motionQuery.removeEventListener('change', onMotionChange);
+      offMotion();
     };
   }, [resetPose]);
 
