@@ -1,0 +1,471 @@
+/* ─────────────────────────────────────────────────────────────
+   Laptop3D — portátil interactivo construido con transformaciones
+   CSS 3D. Cada cara es un div real, así que la pantalla muestra el
+   dashboard como DOM (texto nítido, traducible) en vez de textura.
+
+   Sistema de coordenadas del modelo (px, antes del escalado):
+     origen  = bisagra, centrada en X
+     +Y      = hacia abajo      +Z = hacia el espectador
+     base    = 620 × 420, 15 de grosor, se extiende hacia +Z
+     tapa    = 620 × 388, 12 de grosor, sube desde la bisagra
+   ───────────────────────────────────────────────────────────── */
+
+.wrap {
+  position: relative;
+  width: 100%;
+  isolation: isolate;
+}
+
+/* Halo rojo de marca detrás del equipo */
+.glow {
+  position: absolute;
+  inset: -12% -8%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(48% 42% at 50% 54%, rgba(219, 31, 46, 0.5), transparent 70%),
+    radial-gradient(34% 26% at 62% 32%, rgba(239, 68, 68, 0.3), transparent 72%);
+  filter: blur(10px);
+}
+
+.scene {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 560px;
+  perspective: 1700px;
+  perspective-origin: 50% 50%;
+  cursor: grab;
+  /* pan-y deja que el dedo siga haciendo scroll vertical en móvil;
+     el arrastre horizontal es el que gira el portátil. */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.scene:active { cursor: grabbing; }
+
+.rig {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform:
+    translate3d(var(--ox, 0px), var(--oy, 0px), 0)
+    rotateX(var(--rx, -14deg))
+    rotateY(var(--ry, -26deg))
+    scale3d(var(--zoom, 0.72), var(--zoom, 0.72), var(--zoom, 0.72));
+}
+
+/* Recentra el conjunto: la bisagra está en el origen, pero queremos
+   orbitar alrededor del centro visual del portátil. */
+.model {
+  position: absolute;
+  transform-style: preserve-3d;
+  transform: translate3d(0, 172px, -210px);
+}
+
+/* ── Cajas y caras genéricas ── */
+.box { position: absolute; transform-style: preserve-3d; }
+
+.face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  backface-visibility: hidden;
+}
+
+/* ── Tapa (pantalla) ── */
+.lidHinge {
+  position: absolute;
+  transform-style: preserve-3d;
+  transform: translate3d(0, 0, 6px) rotateX(var(--lid, 12deg));
+}
+.lidBox { transform: translate3d(0, -194px, 0); }
+
+.lidFront,
+.lidBack { width: 620px; height: 388px; margin: -194px 0 0 -310px; }
+.lidFront { transform: translateZ(6px); }
+.lidBack  { transform: rotateY(180deg) translateZ(6px); }
+
+.lidTop,
+.lidBottom { width: 620px; height: 12px; margin: -6px 0 0 -310px; }
+.lidTop    { transform: rotateX(90deg) translateZ(194px); }
+.lidBottom { transform: rotateX(-90deg) translateZ(194px); }
+
+.lidLeft,
+.lidRight { width: 12px; height: 388px; margin: -194px 0 0 -6px; }
+.lidLeft  { transform: rotateY(-90deg) translateZ(310px); }
+.lidRight { transform: rotateY(90deg) translateZ(310px); }
+
+/* Aluminio del chasis */
+.shellEdge {
+  background: linear-gradient(180deg, #232328, #0a0a0c);
+  box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.3);
+}
+.shellSide {
+  background: linear-gradient(90deg, #1c1c20, #0a0a0c);
+  box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.35);
+}
+
+/* Cara frontal de la tapa: marco + pantalla */
+.lidFront {
+  padding: 9px 9px 24px;
+  border-radius: 13px;
+  background: linear-gradient(160deg, #17171b, #08080a);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 2px rgba(219, 31, 46, 0.16),
+    0 0 40px rgba(219, 31, 46, 0.28);
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #08080a;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 0 34px rgba(219, 31, 46, 0.3);
+}
+
+/* El dashboard se maqueta a 1188×698 y se reduce a la mitad: así
+   trabajamos con tamaños cómodos y el render final queda muy fino. */
+.screenScale {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1204px;
+  height: 710px;
+  transform: scale(0.5);
+  transform-origin: top left;
+}
+
+/* Reflejo de cristal sobre la pantalla */
+.glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(112deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.03) 26%, transparent 46%);
+}
+
+.notch {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+
+/* Cara trasera de la tapa: logo iluminado */
+.lidBack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(200deg, #1b1b1f, #0a0a0c 55%, #141417);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.backLogo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0.92;
+}
+.backLogoMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 0 34px rgba(239, 68, 68, 0.6);
+}
+.backLogoText {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f4f4f5;
+}
+.backLogoText em { font-style: normal; color: #ef4444; }
+
+/* ── Base (teclado) ── */
+.baseBox { transform: translate3d(0, 7px, 210px); }
+
+.baseTop,
+.baseBottom { width: 620px; height: 420px; margin: -210px 0 0 -310px; }
+.baseTop    { transform: rotateX(90deg) translateZ(7px); }
+.baseBottom { transform: rotateX(-90deg) translateZ(7px); }
+
+.baseFront,
+.baseBack { width: 620px; height: 15px; margin: -7px 0 0 -310px; }
+.baseFront { transform: translateZ(210px); }
+.baseBack  { transform: rotateY(180deg) translateZ(210px); }
+
+.baseLeft,
+.baseRight { width: 420px; height: 15px; margin: -7px 0 0 -210px; }
+.baseLeft  { transform: rotateY(-90deg) translateZ(310px); }
+.baseRight { transform: rotateY(90deg) translateZ(310px); }
+/* Tiras de neón que recorren los cantos de la base */
+.baseLeft, .baseRight {
+  box-shadow:
+    inset 0 -2px 0 #ff3b42,
+    0 0 18px rgba(239, 68, 68, 0.6);
+}
+
+.baseTop {
+  padding: 22px 30px 18px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1d1d21 0%, #131316 46%, #0b0b0d 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 60px rgba(219, 31, 46, 0.1);
+}
+.baseBottom {
+  border-radius: 12px;
+  background: linear-gradient(180deg, #0d0d10, #060607);
+}
+.baseFront {
+  border-radius: 0 0 7px 7px;
+  background: linear-gradient(180deg, #1e1e23, #0b0b0d);
+  box-shadow:
+    0 0 22px rgba(239, 68, 68, 0.75),
+    0 0 60px rgba(219, 31, 46, 0.45),
+    inset 0 -2px 0 #ff3b42;
+}
+/* Muesca para abrir la tapa */
+.baseFront::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 96px;
+  height: 5px;
+  transform: translateX(-50%);
+  border-radius: 0 0 6px 6px;
+  background: #101013;
+}
+
+/* Teclado */
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 4px;
+  padding: 8px;
+  border-radius: 8px;
+  /* El lecho rojo se ve por las juntas: así se lee como retroiluminación
+     RGB en vez de como un teclado gris. */
+  background: linear-gradient(180deg, #d81d26, #6b0e14);
+  box-shadow: 0 0 22px rgba(239, 68, 68, 0.45);
+}
+.key {
+  height: 19px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #17171b, #0a0a0c);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.keyWide { grid-column: span 5; }
+.keyAccent {
+  background: linear-gradient(180deg, #ff4b52, #c81723);
+  box-shadow: 0 0 12px rgba(255, 75, 82, 0.9);
+}
+.trackpad {
+  width: 196px;
+  height: 112px;
+  margin: 16px auto 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #141418, #0b0b0d);
+  box-shadow:
+    inset 0 0 0 1px rgba(239, 68, 68, 0.45),
+    0 0 16px rgba(239, 68, 68, 0.28);
+}
+
+/* Bisagra */
+.hinge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 340px;
+  height: 11px;
+  margin: -5px 0 0 -170px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #ff3b42, #7f1d1d);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.85);
+  transform: rotateX(90deg) translateZ(2px);
+}
+
+/* Plataforma de luz: dos aros concéntricos tumbados en el suelo, bajo la
+   mano. Reemplazan a la sombra plana y son lo que ancla el conjunto. */
+.shadow,
+.ringOuter,
+.ringInner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+}
+
+.shadow {
+  width: 700px;
+  height: 700px;
+  margin: -350px 0 0 -350px;
+  background:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75), transparent 62%),
+    radial-gradient(ellipse at center, rgba(219, 31, 46, 0.55), transparent 58%);
+  filter: blur(22px);
+  transform: translate3d(0, 302px, 130px) rotateX(90deg);
+}
+
+.ringOuter,
+.ringInner {
+  border-style: solid;
+  border-color: #ff3b42;
+  background: transparent;
+}
+.ringOuter {
+  width: 620px;
+  height: 620px;
+  margin: -310px 0 0 -310px;
+  border-width: 5px;
+  box-shadow: 0 0 50px rgba(255, 59, 66, 0.95), inset 0 0 60px rgba(255, 59, 66, 0.6);
+  filter: blur(1px);
+  transform: translate3d(0, 302px, 130px) rotateX(90deg);
+  animation: ringPulse 5s ease-in-out infinite;
+}
+.ringInner {
+  width: 410px;
+  height: 410px;
+  margin: -205px 0 0 -205px;
+  border-width: 3px;
+  opacity: 0.7;
+  box-shadow: 0 0 34px rgba(255, 59, 66, 0.85);
+  filter: blur(1px);
+  transform: translate3d(0, 302px, 130px) rotateX(90deg);
+  animation: ringPulse 5s ease-in-out infinite reverse;
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.9; }
+}
+
+/* ── Puntos interactivos ── */
+.hotspot {
+  position: absolute;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: help;
+  transform: translate(-50%, -50%);
+}
+.hotspot::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.22);
+}
+.hotspot::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(239, 68, 68, 0.8);
+  animation: hotspotPing 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes hotspotPing {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  80%  { transform: scale(3.2); opacity: 0; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+
+.tip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  width: max-content;
+  max-width: 220px;
+  padding: 9px 13px;
+  transform: translateX(-50%) translateY(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 12, 14, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.hotspot:hover .tip,
+.hotspot:focus-visible .tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.tipTitle {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fafafa;
+}
+.tipText {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #a1a1aa;
+}
+
+/* ── Pista de uso ── */
+.hint {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  /* Deja aire para los aros de luz, que se salen de la escena. */
+  margin-top: 34px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b6b76;
+  transition: opacity 0.4s ease;
+}
+.hintItem { display: inline-flex; align-items: center; gap: 6px; }
+.hintDot { width: 3px; height: 3px; border-radius: 50%; background: #db1f2e; }
+.hintFaded { opacity: 0.25; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .scene { height: 420px; }
+}
+@media (max-width: 640px) {
+  .scene { height: 330px; }
+  .hint { gap: 10px; font-size: 10px; letter-spacing: 0.06em; }
+  /* En táctil no hay rueda ni doble clic, y los rótulos con tooltip
+     estorban al arrastrar: se dejan sólo el gesto que sí aplica. */
+  .hintDesktopOnly { display: none; }
+  .hotspot { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hotspot::after { animation: none; }
+}

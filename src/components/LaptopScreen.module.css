@@ -1,0 +1,285 @@
+/* ─────────────────────────────────────────────────────────────
+   LaptopScreen — la UI que se ve dentro de la pantalla del
+   portátil 3D. Se maqueta a 1188×698 y el contenedor la reduce al
+   50 %, por eso los tamaños de aquí son "de escritorio" normales.
+   ───────────────────────────────────────────────────────────── */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #0b0b0e;
+  color: #e8e8ec;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* ── Barra superior ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.brandMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.55);
+}
+.brand em { font-style: normal; color: #ef4444; }
+
+.topActions { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.iconBtn {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+.iconDot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.9);
+}
+.user { display: flex; align-items: center; gap: 9px; }
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #ef4444, #7f1d1d);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.28);
+}
+.userName { font-size: 12.5px; font-weight: 600; color: #fafafa; }
+.userRole { font-size: 10.5px; color: #6f6f7b; }
+
+.body { display: flex; flex: 1; min-height: 0; }
+
+/* ── Barra lateral ── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 186px;
+  padding: 16px 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #74747f;
+}
+.navItemActive {
+  background: linear-gradient(90deg, #db1f2e, #a3141f);
+  color: #fff;
+  box-shadow: 0 6px 18px -8px rgba(219, 31, 46, 0.9);
+}
+.navIcon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  border: 1.5px solid currentColor;
+  opacity: 0.75;
+}
+.navItemActive .navIcon { opacity: 1; }
+
+/* ── Contenido ── */
+.main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 14px;
+  padding: 16px 18px;
+}
+.col { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 13px; }
+
+.greeting {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+}
+.greetingSub { margin-top: 2px; font-size: 12px; color: #6f6f7b; }
+
+/* Tarjetas de métricas */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.stat {
+  padding: 12px 13px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #121216;
+}
+.statLabel { font-size: 10.5px; color: #6f6f7b; }
+.statValue {
+  margin-top: 5px;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fafafa;
+}
+.statDelta {
+  margin-top: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+/* Paneles */
+.panels { display: grid; grid-template-columns: 1.28fr 1fr; gap: 11px; flex: 1; min-height: 0; }
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding: 13px 15px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #101014;
+}
+.panelHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.panelTitle { font-size: 12.5px; font-weight: 600; color: #e4e4ea; }
+.panelBadge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.1);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: #4ade80;
+}
+
+/* Gráfica */
+.chartWrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.chart { flex: 1; width: 100%; min-height: 0; }
+.chartLine {
+  fill: none;
+  stroke: #ef4444;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.75));
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+  animation: drawLine 2.2s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+.chartArea { fill: url(#ducklabArea); opacity: 0; animation: fadeArea 1.4s 1.3s ease forwards; }
+@keyframes fadeArea { to { opacity: 1; } }
+.chartGrid { stroke: rgba(255, 255, 255, 0.05); stroke-width: 1; }
+.chartPeak {
+  fill: #fff;
+  stroke: #ef4444;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+  opacity: 0;
+  animation: fadeArea 0.5s 2.5s ease forwards;
+}
+.months {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  color: #55555f;
+}
+
+/* Proyectos activos */
+.rows { display: flex; flex-direction: column; gap: 7px; }
+.row { display: flex; align-items: center; gap: 9px; font-size: 11.5px; }
+.rowDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rowName { flex: 1; color: #d3d3da; }
+.pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #8a8a96;
+  white-space: nowrap;
+}
+.pillDone { border-color: rgba(74, 222, 128, 0.3); color: #4ade80; }
+
+/* ── Panel de marca (derecha) ── */
+.brandRail {
+  position: relative;
+  display: flex;
+  width: 268px;
+  flex-shrink: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 11px;
+  border: 1px solid rgba(219, 31, 46, 0.22);
+  background:
+    radial-gradient(80% 55% at 50% 26%, rgba(219, 31, 46, 0.42), transparent 70%),
+    linear-gradient(200deg, #1a0708, #0b0b0e 62%);
+}
+/* Destellos diagonales del render */
+.rail Streak, .streak {
+  position: absolute;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #ff5a5a, transparent);
+  opacity: 0.65;
+  filter: blur(0.4px);
+}
+.railMark {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 108px;
+  height: 108px;
+  transform: translateX(-50%) rotate(-14deg);
+  border-radius: 26px;
+  background: linear-gradient(150deg, #2b0d10, #120507);
+  box-shadow:
+    0 0 0 1.5px rgba(239, 68, 68, 0.55),
+    0 0 44px rgba(239, 68, 68, 0.55),
+    inset 0 0 26px rgba(239, 68, 68, 0.28);
+}
+.railTag {
+  position: relative;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: #fafafa;
+}
+.railTag em { font-style: normal; color: #ef4444; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chartLine { animation: none; stroke-dashoffset: 0; }
+  .chartArea, .chartPeak { animation: none; opacity: 1; }
+}

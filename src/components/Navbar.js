@@ -32,8 +32,9 @@ export default function Navbar() {
   const { lang, toggleLang } = useLanguage();
   const navLinks = navLinksByLang[lang];
   const portalLabel = lang === 'es' ? 'Portal Clientes' : 'Client Portal';
-  // Las páginas públicas usan fondo perla (tema claro); login/portal son oscuras.
-  const light = ['/', '/planes', '/blog', '/contacto', '/demo', '/portafolio'].includes(pathname);
+  // Páginas públicas con fondo perla (tema claro). La home, el login y el
+  // portal son oscuros, así que la barra se pinta sobre negro.
+  const light = ['/planes', '/blog', '/contacto', '/demo', '/portafolio'].includes(pathname);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

@@ -1,15 +1,17 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Receipt, Monitor, Globe, ShoppingCart, Bot, Wrench, Target, MessageSquare, ShieldCheck, Clock, MessageCircle, QrCode } from 'lucide-react';
+import { Receipt, Monitor, Globe, ShoppingCart, Bot, Wrench, Target, MessageSquare, ShieldCheck, Clock, MessageCircle, QrCode, ArrowRight, PenTool, Rocket } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import DuckMark from '@/components/DuckMark';
+import Laptop3D from '@/components/Laptop3D';
 import { useLanguage } from '@/lib/LanguageContext';
 
 const serviceIcons = [Receipt, Monitor, Globe, ShoppingCart, Bot, MessageCircle, QrCode, Wrench];
 const valueIcons = [Target, MessageSquare, ShieldCheck];
+const stepIcons = [MessageCircle, PenTool, Rocket];
 // Metadatos por proyecto, en el mismo orden que content[lang].projects.
 // `img: null` → la tarjeta dibuja una portada generada con la inicial y el gradiente.
 // `url: null` → tarjeta no clickeable (proyecto propio aún no publicado, o
@@ -24,10 +26,10 @@ const projectMeta = [
 
 const content = {
   en: {
-    badge: 'Software Development',
-    h1a: 'Turning ideas', h1accent: 'digital', h1b: 'solutions',
+    badge: 'Custom Software Development',
+    h1a: 'Software that powers', h1accent: 'real business.',
     sub: 'POS systems, desktop apps, web platforms and AI automation. Designed, built and maintained for your business.',
-    ctaPricing: 'View pricing', ctaTalk: "Let's talk",
+    ctaProjects: 'View projects', ctaTalk: "Let's talk about your idea",
     stats: [{ k: '+5', v: 'Years of experience' }, { k: '100%', v: 'Projects in production' }, { k: '24/7', v: 'Direct support' }],
     aboutOverline: 'About us', aboutTitle: 'Custom software,', aboutAccent: 'built with you',
     aboutBody: "I turn your business's real needs into digital tools that actually work. Direct contact, no middlemen: you talk to the person who builds it. Every project is custom-built and backed by ongoing support.",
@@ -68,10 +70,10 @@ const content = {
     capture: 'Screenshot of', builtBy: 'Ducklab', viewLive: 'View live site',
   },
   es: {
-    badge: 'Desarrollo de Software',
-    h1a: 'Transformo ideas', h1accent: 'soluciones', h1b: 'digitales',
+    badge: 'Desarrollo de Software a Medida',
+    h1a: 'Software que impulsa negocios', h1accent: 'reales.',
     sub: 'Sistemas POS, apps de escritorio, plataformas web y automatización con IA. Diseñadas, construidas y mantenidas para tu negocio.',
-    ctaPricing: 'Ver precios', ctaTalk: 'Hablemos',
+    ctaProjects: 'Ver proyectos', ctaTalk: 'Hablemos de tu idea',
     stats: [{ k: '+5', v: 'Años de experiencia' }, { k: '100%', v: 'Proyectos en producción' }, { k: '24/7', v: 'Soporte directo' }],
     aboutOverline: 'Quiénes somos', aboutTitle: 'Software a medida,', aboutAccent: 'hecho contigo',
     aboutBody: 'Convierto las necesidades reales de tu negocio en herramientas digitales que funcionan. Trato directo, sin intermediarios: hablas con quien programa. Cada proyecto se construye a tu medida y queda respaldado con soporte continuo.',
@@ -122,115 +124,111 @@ export default function Home() {
   const categories = ['all', ...new Set(t.projects.map((p) => p.cat))];
 
   return (
-    <main className="grain bg-pearl relative min-h-screen text-[#0b0b0c] selection:bg-[#db1f2e]/20">
+    <main className="grain-dark relative min-h-screen bg-[#08080a] text-[#fafafa] selection:bg-[#db1f2e]/30">
       <Navbar />
 
       <div className="laser-line pointer-events-none fixed left-8 top-0 z-30 hidden h-full w-px lg:block" />
 
       {/* ───────────────── Hero ───────────────── */}
-      <section className="relative isolate overflow-hidden px-4 pt-40 pb-28 md:pt-52 md:pb-40">
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.04)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,#000_30%,transparent_75%)]" />
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_45%_40%_at_50%_-5%,rgba(219,31,46,0.10),transparent_60%)]" />
+      <section className="relative isolate overflow-hidden px-4 pt-32 pb-20 md:pt-40 md:pb-28">
+        {/* Rejilla técnica + halo rojo, la firma visual de la marca */}
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_10%,#000_25%,transparent_78%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_72%_35%,rgba(219,31,46,0.18),transparent_65%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_45%_35%_at_20%_0%,rgba(239,68,68,0.08),transparent_60%)]" />
 
-        <div className="mx-auto max-w-5xl text-center">
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-black/10 bg-white/50 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[#56565d] backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#db1f2e]" />
-            {t.badge}
-          </span>
+        {/* Haces de luz cenital sobre el 3D. Son tres conos difuminados que
+            caen desde el borde superior; el degradado los apaga antes de
+            llegar al contenido para que nunca compitan con el texto. */}
+        <div className="light-beams pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[85%] lg:block">
+          <span className="beam beam-a" />
+          <span className="beam beam-b" />
+          <span className="beam beam-c" />
+        </div>
 
-          <h1 className="mt-9 text-5xl font-bold leading-[0.95] tracking-tight md:text-8xl">
-            {t.h1a}
-            <br />
-            {lang === 'en' ? 'into' : 'en'}{' '}
-            <span className="relative inline-block text-[#db1f2e]">
-              {t.h1accent}
-              <span className="laser-underline absolute -bottom-2 left-0 h-[3px] w-full bg-[#db1f2e]" />
+        {/* En móvil es una columna: titular → portátil → acciones, para que el
+            3D no quede enterrado bajo los botones. En lg pasa a dos columnas y
+            el portátil ocupa toda la altura de la derecha. */}
+        <div className="mx-auto flex max-w-7xl flex-col gap-12 lg:grid lg:grid-cols-2 lg:items-center lg:gap-6">
+          {/* Titular */}
+          <div className="text-center lg:text-left">
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[#a1a1aa] backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#db1f2e]" />
+              {t.badge}
             </span>
-            <br />
-            {t.h1b}
-          </h1>
 
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-[#56565d] md:text-xl">
-            {t.sub}
-          </p>
+            <h1 className="mt-8 text-4xl font-bold leading-[1.02] tracking-tight sm:text-5xl xl:text-6xl">
+              {t.h1a}{' '}
+              <span className="relative inline-block text-[#db1f2e]">
+                {t.h1accent}
+                <span className="laser-underline absolute -bottom-2 left-0 h-[3px] w-full bg-[#db1f2e]" />
+              </span>
+            </h1>
 
-          <div className="mt-11 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/planes" className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0b0b0c] px-8 py-3.5 font-semibold text-white shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)] transition hover:-translate-y-0.5 hover:bg-[#db1f2e] hover:shadow-[0_18px_40px_-14px_rgba(219,31,46,0.5)] sm:w-auto">
-              {t.ctaPricing}
-              <span className="transition-transform group-hover:translate-x-1">→</span>
-            </Link>
-            <Link href="/contacto" className="inline-flex w-full items-center justify-center rounded-full border border-black/15 bg-white/40 px-8 py-3.5 font-semibold text-[#0b0b0c] transition hover:border-black/30 hover:bg-white/70 sm:w-auto">
-              {t.ctaTalk}
-            </Link>
+            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#a1a1aa] lg:mx-0">
+              {t.sub}
+            </p>
           </div>
 
-          <div className="mx-auto mt-20 grid max-w-2xl grid-cols-3 gap-8 border-t border-black/10 pt-10">
-            {t.stats.map((s) => (
-              <div key={s.v}>
-                <div className="text-3xl font-bold tracking-tight text-[#db1f2e] md:text-5xl">{s.k}</div>
-                <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.15em] text-[#56565d]">{s.v}</div>
-              </div>
-            ))}
+          {/* Columna 3D */}
+          <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <Laptop3D lang={lang} />
           </div>
-        </div>
-      </section>
 
-      {/* ───────────────── Quiénes somos ───────────────── */}
-      <section className="px-4 py-24">
-        <div className="mx-auto max-w-5xl">
-          <SectionTitle tone="light" overline={t.aboutOverline} title={t.aboutTitle} accent={t.aboutAccent} />
-          <p className="mx-auto max-w-3xl text-center text-lg leading-relaxed text-[#56565d]">
-            <span className="font-semibold text-[#0b0b0c]">Ducklab</span> — {t.aboutBody}
-          </p>
-          <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {t.values.map((v, i) => {
-              const Icon = valueIcons[i];
-              return (
-                <div key={v.t} className="group relative overflow-hidden rounded-2xl border border-black/[0.08] bg-white/70 shadow-[0_14px_44px_-30px_rgba(0,0,0,0.55)] p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-black/15 hover:bg-white/80">
-                  <span className="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-[#db1f2e] transition-transform duration-300 group-hover:scale-x-100" />
-                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-black/10 bg-white text-[#db1f2e]">
-                    <Icon className="h-5 w-5" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="mb-1 font-semibold text-[#0b0b0c]">{v.t}</h3>
-                  <p className="text-sm text-[#56565d]">{v.d}</p>
+          {/* Acciones y cifras */}
+          <div className="text-center lg:text-left">
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start">
+              <Link href="/portafolio" className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#db1f2e] px-8 py-3.5 font-semibold text-white shadow-[0_18px_44px_-16px_rgba(219,31,46,0.75)] transition hover:-translate-y-0.5 hover:bg-[#ef4444] sm:w-auto">
+                {t.ctaProjects}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
+              </Link>
+              <Link href="/contacto" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-8 py-3.5 font-semibold text-white backdrop-blur-sm transition hover:border-white/30 hover:bg-white/[0.09] sm:w-auto">
+                {t.ctaTalk}
+                <MessageCircle className="h-4 w-4" strokeWidth={1.75} />
+              </Link>
+            </div>
+
+            <div className="mx-auto mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-white/10 pt-8 lg:mx-0">
+              {t.stats.map((s) => (
+                <div key={s.v}>
+                  <div className="text-3xl font-bold tracking-tight text-[#db1f2e] md:text-4xl">{s.k}</div>
+                  <div className="mt-1.5 font-mono text-[10px] uppercase leading-tight tracking-[0.12em] text-[#71717a]">{s.v}</div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ───────────────── Servicios — banda negra ───────────────── */}
-      <section id="servicios" className="relative overflow-hidden bg-[#0b0b0c] px-4 py-28">
-        {/* Halo rojo tenue anclado arriba, mismo lenguaje que el CTA final */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_0%,rgba(219,31,46,0.14),transparent_65%)]" />
+      {/* ───────────────── Servicios ───────────────── */}
+      <section id="servicios" className="relative overflow-hidden px-4 py-28">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_55%_45%_at_50%_0%,rgba(219,31,46,0.12),transparent_65%)]" />
         <div className="relative mx-auto max-w-6xl">
           <SectionTitle tone="dark" overline={t.servicesOverline} title={t.servicesTitle} accent={t.servicesAccent} subtitle={t.servicesSubtitle} />
           <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.07] sm:grid-cols-2 lg:grid-cols-3">
             {t.services.map((s, i) => {
               const Icon = serviceIcons[i];
               return (
-                <div key={s.title} className="group relative bg-[#111113] p-8 transition-colors duration-300 hover:bg-[#18181b]">
+                <div key={s.title} className="group relative bg-[#0e0e11] p-6 transition-colors duration-300 hover:bg-[#161619]">
                   <span className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#db1f2e] transition-transform duration-300 group-hover:scale-y-100" />
-                  <div className="mb-5 flex items-center justify-between">
-                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white transition-colors group-hover:text-[#f87171]">
-                      <Icon className="h-5 w-5" strokeWidth={1.5} />
-                    </div>
-                    <span className="font-mono text-xs tracking-widest text-white/25">0{i + 1}</span>
+                  <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#db1f2e]/25 bg-[#db1f2e]/10 text-[#f87171]">
+                    <Icon className="h-[18px] w-[18px]" strokeWidth={1.5} />
                   </div>
-                  <h3 className="mb-2 text-xl font-semibold text-white">{s.title}</h3>
-                  <p className="text-sm leading-relaxed text-gray-400">{s.desc}</p>
+                  <h3 className="mb-1.5 flex items-center gap-2 text-[15px] font-semibold text-white">
+                    {s.title}
+                    <ArrowRight className="h-3.5 w-3.5 text-[#db1f2e] opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" strokeWidth={2.5} />
+                  </h3>
+                  <p className="text-[13px] leading-relaxed text-[#8a8a96]">{s.desc}</p>
                 </div>
               );
             })}
             {/* Celda 9: mini-CTA que completa la grilla de 3×3 */}
-            <Link href="/contacto" className="group relative flex flex-col items-center justify-center bg-[#db1f2e] p-8 text-center transition-colors duration-300 hover:bg-[#ef4444]">
-              <span className="text-xl font-semibold text-white">
+            <Link href="/contacto" className="group relative flex flex-col items-center justify-center bg-[#db1f2e] p-6 text-center transition-colors duration-300 hover:bg-[#ef4444]">
+              <span className="text-lg font-semibold text-white">
                 {lang === 'en' ? 'Something else in mind?' : '¿Tienes otra idea?'}
               </span>
               <span className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-white/85">
                 {lang === 'en' ? "Let's talk" : 'Hablemos'}
-                <span className="transition-transform group-hover:translate-x-1">→</span>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
               </span>
             </Link>
           </div>
@@ -240,7 +238,7 @@ export default function Home() {
       {/* ───────────────── Proyectos ───────────────── */}
       <section className="px-4 py-24">
         <div className="mx-auto max-w-6xl">
-          <SectionTitle tone="light" overline={t.portfolioOverline} title={t.portfolioTitle} accent={t.portfolioAccent} subtitle={t.portfolioSubtitle} />
+          <SectionTitle tone="dark" overline={t.portfolioOverline} title={t.portfolioTitle} accent={t.portfolioAccent} subtitle={t.portfolioSubtitle} />
 
           {/* Filtros por categoría */}
           <div className="mb-10 flex flex-wrap items-center justify-center gap-2.5">
@@ -254,7 +252,7 @@ export default function Home() {
                   className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all duration-200 ${
                     active
                       ? 'border-[#db1f2e] bg-[#db1f2e] text-white shadow-[0_8px_24px_-10px_rgba(219,31,46,0.7)]'
-                      : 'border-black/10 bg-white/60 text-[#56565d] hover:border-black/25 hover:text-[#0b0b0c]'
+                      : 'border-white/10 bg-white/[0.03] text-[#a1a1aa] hover:border-white/25 hover:text-white'
                   }`}
                 >
                   {label}
@@ -277,9 +275,9 @@ export default function Home() {
                 <Card
                   key={p.name}
                   {...cardProps}
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white/70 shadow-[0_14px_44px_-30px_rgba(0,0,0,0.55)] transition-all duration-300 hover:-translate-y-1.5 hover:border-black/15 hover:bg-white/90 hover:shadow-[0_28px_60px_-30px_rgba(0,0,0,0.5)]"
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0e0e11] transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 hover:bg-[#131316] hover:shadow-[0_30px_60px_-30px_rgba(219,31,46,0.45)]"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden border-b border-black/[0.08] bg-[#0b0b0c]">
+                  <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.08] bg-black">
                     {meta.img ? (
                       <img
                         src={meta.img}
@@ -311,17 +309,17 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-7">
-                    <h3 className="mb-2 text-2xl font-bold text-[#0b0b0c]">{p.name}</h3>
-                    <p className="mb-6 flex-1 text-sm leading-relaxed text-[#56565d]">{p.desc}</p>
+                    <h3 className="mb-2 text-2xl font-bold text-white">{p.name}</h3>
+                    <p className="mb-6 flex-1 text-sm leading-relaxed text-[#a1a1aa]">{p.desc}</p>
                     <div className="flex flex-wrap gap-2">
                       {meta.tags.map((tag) => (
-                        <span key={tag} className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 font-mono text-[11px] font-medium tracking-wide text-[#56565d] transition-colors group-hover:border-[#db1f2e]/25 group-hover:text-[#0b0b0c]">{tag}</span>
+                        <span key={tag} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] font-medium tracking-wide text-[#a1a1aa] transition-colors group-hover:border-[#db1f2e]/40 group-hover:text-white">{tag}</span>
                       ))}
                     </div>
                     {meta.url && (
                       <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#db1f2e]">
                         {t.viewLive}
-                        <span className="transition-transform group-hover:translate-x-1">→</span>
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
                       </span>
                     )}
                   </div>
@@ -335,30 +333,74 @@ export default function Home() {
       {/* ───────────────── Proceso ───────────────── */}
       <section className="px-4 py-24">
         <div className="mx-auto max-w-6xl">
-          <SectionTitle tone="light" overline={t.processOverline} title={t.processTitle} accent={t.processAccent} subtitle={t.processSubtitle} />
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {t.steps.map((s) => (
-              <div key={s.n} className="relative rounded-2xl border border-black/[0.08] bg-white/70 shadow-[0_14px_44px_-30px_rgba(0,0,0,0.55)] p-8">
-                <div className="font-mono text-5xl font-bold text-[#db1f2e]/25">{s.n}</div>
-                <h3 className="mt-4 text-xl font-semibold text-[#0b0b0c]">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#56565d]">{s.desc}</p>
-              </div>
-            ))}
+          <SectionTitle tone="dark" overline={t.processOverline} title={t.processTitle} accent={t.processAccent} subtitle={t.processSubtitle} />
+          {/* Línea de tiempo: los conectores punteados son los que comunican
+              que es una secuencia y no tres servicios sueltos. */}
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-6">
+            {t.steps.map((step, i) => {
+              const Icon = stepIcons[i];
+              return (
+                <div key={step.n} className="relative">
+                  {i < t.steps.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-[calc(50%+2rem)] top-6 hidden h-px w-[calc(100%-4rem)] sm:block"
+                      style={{ backgroundImage: 'linear-gradient(to right, rgba(219,31,46,0.55) 55%, transparent 55%)', backgroundSize: '11px 1px' }}
+                    />
+                  )}
+                  <div className="flex flex-col items-center text-center">
+                    <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-xl border border-[#db1f2e]/30 bg-[#db1f2e]/10 text-[#f87171]">
+                      <Icon className="h-5 w-5" strokeWidth={1.5} />
+                      <span className="absolute -bottom-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#db1f2e] font-mono text-[10px] font-bold text-white">
+                        {step.n}
+                      </span>
+                    </div>
+                    <h3 className="mt-6 text-lg font-semibold text-white">{step.title}</h3>
+                    <p className="mt-2 max-w-xs text-sm leading-relaxed text-[#8a8a96]">{step.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <p className="mx-auto mt-10 flex max-w-2xl items-center justify-center gap-2 text-center text-[#56565d]">
+          <p className="mx-auto mt-10 flex max-w-2xl items-center justify-center gap-2 text-center text-[#a1a1aa]">
             <Clock className="h-4 w-4 shrink-0 text-[#db1f2e]" strokeWidth={1.5} />
-            {t.delivery}<span className="font-semibold text-[#0b0b0c]">{t.deliveryStrong}</span>{t.deliveryEnd}
+            {t.delivery}<span className="font-semibold text-white">{t.deliveryStrong}</span>{t.deliveryEnd}
           </p>
+        </div>
+      </section>
+
+      {/* ───────────────── Quiénes somos ───────────────── */}
+      <section className="px-4 py-24">
+        <div className="mx-auto max-w-5xl">
+          <SectionTitle tone="dark" overline={t.aboutOverline} title={t.aboutTitle} accent={t.aboutAccent} />
+          <p className="mx-auto max-w-3xl text-center text-lg leading-relaxed text-[#a1a1aa]">
+            <span className="font-semibold text-white">Ducklab</span> — {t.aboutBody}
+          </p>
+          <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {t.values.map((v, i) => {
+              const Icon = valueIcons[i];
+              return (
+                <div key={v.t} className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0e0e11] p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-[#131316]">
+                  <span className="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-[#db1f2e] transition-transform duration-300 group-hover:scale-x-100" />
+                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-[#db1f2e]">
+                    <Icon className="h-5 w-5" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="mb-1 font-semibold text-white">{v.t}</h3>
+                  <p className="text-sm text-[#a1a1aa]">{v.d}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
       {/* ───────────────── CTA final ───────────────── */}
       <section className="relative overflow-hidden px-4 py-12">
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#0b0b0c] px-6 py-24 text-center text-white">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0b0b0d] px-6 py-24 text-center text-white">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_50%_50%,rgba(219,31,46,0.22),transparent_70%)]" />
           <div className="relative mx-auto max-w-2xl">
             <h2 className="text-4xl font-bold tracking-tight md:text-6xl">{t.ctaTitle}</h2>
-            <p className="mt-6 text-lg text-gray-300 md:text-xl">{t.ctaSub}</p>
+            <p className="mt-6 text-lg text-[#a1a1aa] md:text-xl">{t.ctaSub}</p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/planes" className="inline-flex w-full items-center justify-center rounded-full bg-[#db1f2e] px-8 py-3.5 font-semibold text-white shadow-[0_0_30px_rgba(219,31,46,0.35)] transition hover:bg-[#ef4444] sm:w-auto">
                 {t.ctaPricing2}
