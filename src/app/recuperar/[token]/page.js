@@ -1,3 +1,8 @@
+/**
+ * Página /recuperar/:token: verifica que el enlace siga vigente y muestra
+ * el formulario para la nueva contraseña.
+ */
+
 import Link from 'next/link'
 import { getPasswordResetByToken } from '@/lib/db'
 import ResetForm from './ResetForm'

@@ -1,3 +1,5 @@
+/** Auditoría (admin): historial de acciones hechas por los administradores. */
+
 import { requireAdmin } from '@/lib/session'
 import { getAuditLog } from '@/lib/db'
 

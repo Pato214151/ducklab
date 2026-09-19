@@ -1,3 +1,5 @@
+/** GET /api/me: datos del usuario logueado (sin la contraseña). */
+
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { getUserById } from '@/lib/db'

@@ -1,3 +1,8 @@
+/**
+ * Layout raíz del sitio: metadatos SEO/OpenGraph, fuentes (Inter, Sora,
+ * JetBrains Mono), estilos globales y proveedor de idioma.
+ */
+
 import './globals.css';
 import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
 import { LanguageProvider } from '@/lib/LanguageContext';

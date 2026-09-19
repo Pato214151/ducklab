@@ -1,3 +1,5 @@
+/** Layout del dashboard (servidor): exige sesión y pasa el usuario al layout visual. */
+
 import { redirect } from 'next/navigation'
 import { verifySession, getCurrentUser } from '@/lib/dal'
 import DashboardLayout from './DashboardLayout'

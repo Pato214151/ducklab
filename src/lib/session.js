@@ -1,8 +1,14 @@
+/**
+ * Sesiones con JWT firmado (jose) guardado en la cookie HttpOnly `session`
+ * (dura 7 días). requireAuth/requireAdmin redirigen si no hay permiso.
+ */
+
 import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+/** Clave para firmar los JWT; en producción es obligatorio SESSION_SECRET. */
 function resolveSecret() {
   const secret = process.env.SESSION_SECRET
   if (secret && secret.length >= 16) return secret
@@ -23,6 +29,7 @@ function resolveSecret() {
 
 const encodedKey = new TextEncoder().encode(resolveSecret())
 
+/** Firma el contenido de la sesión como JWT. */
 export async function encrypt(payload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
@@ -31,6 +38,7 @@ export async function encrypt(payload) {
     .sign(encodedKey)
 }
 
+/** Verifica el JWT; devuelve el contenido o null. */
 export async function decrypt(session) {
   if (!session) return null
   try {
@@ -43,6 +51,7 @@ export async function decrypt(session) {
   }
 }
 
+/** Crea la cookie de sesión tras un login correcto. */
 export async function createSession(userId, role) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   const session = await encrypt({ userId, role, expiresAt })
@@ -56,6 +65,7 @@ export async function createSession(userId, role) {
   })
 }
 
+/** Lee la sesión actual de la cookie (o null). */
 export async function getSession() {
   const cookieStore = await cookies()
   const sessionCookie = cookieStore.get('session')?.value
@@ -63,11 +73,13 @@ export async function getSession() {
   return decrypt(sessionCookie)
 }
 
+/** Borra la cookie (logout). */
 export async function deleteSession() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
 }
 
+/** Exige sesión; si no hay, redirige a /login. */
 export async function requireAuth() {
   const session = await getSession()
   if (!session?.userId) {
@@ -76,6 +88,7 @@ export async function requireAuth() {
   return session
 }
 
+/** Exige sesión de admin; si no, redirige al dashboard. */
 export async function requireAdmin() {
   const session = await requireAuth()
   if (session.role !== 'admin') {

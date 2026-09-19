@@ -1,3 +1,8 @@
+"""
+Cliente HTTP del portal. Hace login contra /api/auth/login y guarda la
+cookie de sesión en el Administrador de Credenciales de Windows (keyring).
+"""
+
 import requests
 import json
 import os
@@ -17,12 +22,14 @@ except Exception:
 
 
 class APIClient:
+    """Sesión HTTP con el portal (cookie persistente entre aperturas)."""
     def __init__(self):
         self.session = requests.Session()
         self.session.headers.update({'Content-Type': 'application/json'})
         self._load_session()
 
     def _load_session(self):
+        """Recupera la cookie guardada (y migra el viejo session.json al llavero)."""
         cookie = None
         # 1) Llavero del SO (preferido)
         if _HAS_KEYRING:
@@ -48,6 +55,7 @@ class APIClient:
             self.session.headers.update({'Cookie': cookie})
 
     def _save_session(self, cookie_str):
+        """Guarda la cookie en el llavero del sistema (o en archivo si no hay)."""
         if _HAS_KEYRING:
             try:
                 keyring.set_password(KEYRING_SERVICE, KEYRING_ACCOUNT, cookie_str)
@@ -62,6 +70,7 @@ class APIClient:
             pass
 
     def clear_session(self):
+        """Borra la cookie guardada."""
         if _HAS_KEYRING:
             try:
                 keyring.delete_password(KEYRING_SERVICE, KEYRING_ACCOUNT)
@@ -75,6 +84,7 @@ class APIClient:
         self.session.headers.pop('Cookie', None)
 
     def logout(self):
+        """Avisa al portal y borra la sesión local."""
         try:
             self.session.post(f'{get_server_url()}/api/auth/logout', timeout=5)
         except Exception:
@@ -105,6 +115,7 @@ class APIClient:
         return resp
 
     def download_file(self, download_id, save_path):
+        """Descarga un instalador del portal (usa la sesión)."""
         url = f'{get_server_url()}/api/downloads/{download_id}'
         resp = self.session.get(url, stream=True, allow_redirects=False)
         if resp.status_code == 200:
@@ -151,6 +162,7 @@ class APIClient:
         return []
 
     def is_authenticated(self):
+        """True si la sesión guardada sigue siendo válida."""
         try:
             resp = self.session.get(f'{get_server_url()}/api/me', allow_redirects=False, timeout=5)
             return resp.status_code == 200

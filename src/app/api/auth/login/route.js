@@ -1,3 +1,8 @@
+/**
+ * POST /api/auth/login: login por JSON (lo usa el launcher de escritorio).
+ * Mismo control que el formulario web: límite de intentos y cookie de sesión.
+ */
+
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { LoginSchema } from '@/lib/definitions'

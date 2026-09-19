@@ -1,3 +1,5 @@
+/** Gestión (admin): formularios para crear clientes, sistemas y versiones. */
+
 import { requireAdmin } from '@/lib/session'
 import { getAllClients, getAllSystems } from '@/lib/db'
 import GestionForms from './GestionForms'

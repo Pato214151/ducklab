@@ -1,3 +1,5 @@
+/** Formulario que pide el correo y dispara requestPasswordReset. */
+
 'use client'
 
 import { useActionState } from 'react'

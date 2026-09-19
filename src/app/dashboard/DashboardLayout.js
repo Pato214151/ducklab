@@ -1,3 +1,8 @@
+/**
+ * Layout visual del dashboard: barra lateral (con menú extra para admin),
+ * colapsable en escritorio y en cajón en el celular.
+ */
+
 'use client'
 
 import { useState } from 'react'
@@ -21,6 +26,7 @@ const adminNav = [
   { href: '/dashboard/admin/auditoria', label: 'Auditoría', Icon: ScrollText },
 ]
 
+/** Barra lateral + contenido de la página. */
 export default function DashboardLayout({ children, user }) {
   const navItems = [...commonNav, ...(user?.role === 'admin' ? adminNav : [])]
   const pathname = usePathname()

@@ -1,3 +1,5 @@
+/** Server Actions de soporte: crear ticket, responder y cambiar su estado. */
+
 'use server'
 
 import { revalidatePath } from 'next/cache'
@@ -5,6 +7,7 @@ import { TicketSchema, MessageSchema } from '@/lib/definitions'
 import { requireAuth } from '@/lib/session'
 import { getUserById, createTicket, addMessageToTicket, getTicketById } from '@/lib/db'
 
+/** Crea un ticket de soporte del cliente logueado. */
 export async function createTicketAction(state, formData) {
   const session = await requireAuth()
 
@@ -31,6 +34,7 @@ export async function createTicketAction(state, formData) {
   return { errors: null, message: null, success: true, ticket }
 }
 
+/** Agrega un mensaje a un ticket del propio cliente. */
 export async function addMessageAction(ticketId, formData) {
   const session = await requireAuth()
 
@@ -61,6 +65,7 @@ export async function addMessageAction(ticketId, formData) {
   return { errors: null, message: null, success: true }
 }
 
+/** Cambia el estado de un ticket (solo admin). */
 export async function updateTicketStatusAction(ticketId, status) {
   const session = await requireAuth()
   const user = await getUserById(session.userId)

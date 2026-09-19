@@ -1,3 +1,5 @@
+/** Página /recuperar: pedir el enlace para restablecer la contraseña. */
+
 import Link from 'next/link'
 import ForgetForm from './ForgetForm'
 import styles from './page.module.css'

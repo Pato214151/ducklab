@@ -1,3 +1,8 @@
+/**
+ * Server Actions del admin para dar de alta clientes, sistemas y versiones
+ * descargables. Validan con zod, dejan registro en la auditoría y refrescan la página.
+ */
+
 'use server'
 
 import { revalidatePath } from 'next/cache'
@@ -8,6 +13,7 @@ import { recordAudit } from '@/lib/audit'
 
 const PATH = '/dashboard/admin/gestion'
 
+/** Crea un cliente nuevo. */
 export async function createClientAction(state, formData) {
   const session = await requireAdmin()
   const v = NewClientSchema.safeParse({
@@ -29,6 +35,7 @@ export async function createClientAction(state, formData) {
   return { success: true, message: `Cliente "${res.name}" creado correctamente.` }
 }
 
+/** Crea un sistema para un cliente (genera su API key). */
 export async function createSystemAction(state, formData) {
   const session = await requireAdmin()
   const v = NewSystemSchema.safeParse({
@@ -50,6 +57,7 @@ export async function createSystemAction(state, formData) {
   return { success: true, message: `Sistema "${sys.name}" creado. API key generada.` }
 }
 
+/** Publica una versión descargable de un sistema. */
 export async function createDownloadAction(state, formData) {
   const session = await requireAdmin()
   const v = NewDownloadSchema.safeParse({

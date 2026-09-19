@@ -1,3 +1,5 @@
+/** Bitácora de auditoría de las acciones del admin (se ve en /dashboard/admin/auditoria). */
+
 import 'server-only'
 import { logAudit, getUserById } from '@/lib/db'
 

@@ -1,3 +1,9 @@
+/**
+ * Detalle de un sistema (admin): estado, errores reportados, último commit,
+ * licencia, API key y runbook. Los botones usan las Server Actions de
+ * lib/actions/admin.js.
+ */
+
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getSystemById, getTelemetryBySystem, getUserById } from '@/lib/db'

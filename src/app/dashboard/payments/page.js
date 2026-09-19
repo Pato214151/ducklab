@@ -1,3 +1,5 @@
+/** Pagos del cliente: cuotas y opción de pagar por adelantado. */
+
 import { requireAuth } from '@/lib/session'
 import { getPaymentsByClient } from '@/lib/db'
 import { requestEarlyPaymentAction } from '@/lib/actions/payments'

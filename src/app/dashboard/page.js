@@ -1,3 +1,5 @@
+/** Inicio del dashboard del cliente: resumen de descargas, tickets y plan. */
+
 import { requireAuth } from '@/lib/session'
 import { getUserById, getDownloadsByClient, getTicketsByClient } from '@/lib/db'
 import { ShineCard } from '@/components/ui/shine-card'

@@ -1,8 +1,15 @@
+/**
+ * Implementación de la capa de datos sobre PostgreSQL (misma API que
+ * db-json.js). Las filas se devuelven en camelCase y las actualizaciones solo
+ * aceptan columnas de una lista blanca (UPDATABLE_COLUMNS) para evitar inyección SQL.
+ */
+
 import 'server-only'
 import { query } from './db-pool'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 
+/** Convierte las columnas snake_case de Postgres a camelCase. */
 function toCamelCase(row) {
   if (!row) return null
   const result = {}
@@ -13,6 +20,7 @@ function toCamelCase(row) {
   return result
 }
 
+/** camelCase → snake_case para armar el SQL. */
 function toSnakeKey(key) {
   return key.replace(/([A-Z])/g, '_$1').toLowerCase()
 }

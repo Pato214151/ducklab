@@ -1,3 +1,5 @@
+/** Configuración de Vitest (tests de src/lib/__tests__). */
+
 import { defineConfig } from 'vitest/config'
 import path from 'path'
 

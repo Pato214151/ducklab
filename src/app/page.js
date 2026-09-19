@@ -1,3 +1,9 @@
+/**
+ * Landing pública de Ducklab (bilingüe): hero con el portátil 3D,
+ * servicios, proyectos, proceso de trabajo y llamada a la acción.
+ * Los textos de cada idioma están en el objeto `content`.
+ */
+
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';

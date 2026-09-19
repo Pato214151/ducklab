@@ -1,3 +1,5 @@
+/** Página de descargas (servidor): carga sistemas y versiones del cliente. */
+
 import { requireAuth } from '@/lib/session'
 import { getSystemsByClient, getDownloadsByClient } from '@/lib/db'
 import SystemsClient from './SystemsClient'

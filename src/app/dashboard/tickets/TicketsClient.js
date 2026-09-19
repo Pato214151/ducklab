@@ -1,3 +1,5 @@
+/** Lista de tickets del cliente y botón para abrir uno nuevo. */
+
 'use client'
 
 import { useState } from 'react'

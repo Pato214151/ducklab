@@ -1,3 +1,8 @@
+/**
+ * GET /api/my-apps: sistemas del cliente con su estado y descargas.
+ * Es lo que muestra la biblioteca del launcher.
+ */
+
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { getSystemsWithStatusByClient, getDownloadsByClient } from '@/lib/db'

@@ -1,3 +1,5 @@
+/** Los tres formularios de alta del admin (cliente, sistema, versión). */
+
 'use client'
 
 import { useActionState } from 'react'

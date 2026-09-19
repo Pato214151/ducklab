@@ -1,3 +1,5 @@
+/** Formulario para abrir un ticket (asunto, descripción y prioridad). */
+
 'use client'
 
 import { useActionState } from 'react'

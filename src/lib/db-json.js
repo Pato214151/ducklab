@@ -1,3 +1,12 @@
+/**
+ * Base de datos en un archivo JSON (data/db.json), para desarrollo y como
+ * respaldo si Postgres no está disponible.
+ *
+ * Se lee y escribe el archivo completo en cada operación (readDb/writeDb).
+ * La primera vez se crea con datos de ejemplo (defaultData). Implementa las
+ * mismas funciones que db-pg.js para que db.js pueda intercambiarlas.
+ */
+
 import 'server-only'
 import fs from 'fs'
 import path from 'path'
@@ -346,12 +355,14 @@ const defaultData = {
   ],
 }
 
+/** Crea la carpeta data/ si no existe. */
 function ensureDir() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true })
   }
 }
 
+/** Genera una API key nueva para un sistema (sk_live_…). */
 function genApiKey() {
   return 'sk_live_' + crypto.randomBytes(24).toString('hex')
 }
@@ -368,6 +379,7 @@ function backfillApiKeys(data) {
   return changed
 }
 
+/** Lee db.json (o lo crea con los datos de ejemplo). */
 function readDb() {
   ensureDir()
   const exists = fs.existsSync(DB_PATH)
@@ -392,6 +404,7 @@ function readDb() {
   return data
 }
 
+/** Guarda el objeto completo en db.json. */
 function writeDb(data) {
   ensureDir()
   // Escritura atómica: tmp + rename. Si el proceso muere a mitad de escritura,
@@ -403,6 +416,7 @@ function writeDb(data) {
 
 // ID numérico único y siempre creciente, robusto ante colisiones de Date.now().
 let _idSeq = 0
+/** Siguiente id libre (global). */
 function nextId() {
   return Date.now() * 1000 + (_idSeq++ % 1000)
 }
@@ -417,6 +431,7 @@ const VALID_PRIORITIES = ['low', 'medium', 'high']
 // Dead man's switch: si un sistema no manda latido en 5 min, se considera offline,
 // aunque su último estado guardado fuera 'online' (el proceso pudo morir del todo).
 const HEARTBEAT_STALE_MS = 5 * 60 * 1000
+/** Estado real de un sistema: si no manda latido hace más de 5 min, está offline. */
 function liveStatus(t) {
   if (!t) return 'offline'
   if (!t.lastHeartbeat || (Date.now() - new Date(t.lastHeartbeat).getTime()) > HEARTBEAT_STALE_MS) return 'offline'
@@ -726,6 +741,7 @@ export function getTelemetryBySystem(systemId) {
   return (db.telemetry || []).find(t => t.systemId === systemId) || null
 }
 
+/** Guarda el último latido/estado de un sistema y, si trae error, lo agrega a su lista. */
 export function upsertTelemetry(systemId, clientId, data) {
   const db = readDb()
   let entry = (db.telemetry || []).find(t => t.systemId === systemId)
@@ -789,6 +805,7 @@ export function resolveError(systemId, errorId) {
    ADMIN — Dashboard global
    ═══════════════════════════════════════════ */
 
+/** Resumen para el panel admin: clientes, sistemas por estado, errores y tickets. */
 export function getAdminOverview() {
   const db = readDb()
   const clients = (db.users || []).filter(u => u.role === 'client')
@@ -853,6 +870,7 @@ export function getAdminOverview() {
   }
 }
 
+/** Fallback simulado cuando no se puede leer el repo de GitHub. */
 export function updateSystemFromGit(systemId) {
   const db = readDb()
   const system = (db.systems || []).find(s => s.id === systemId)

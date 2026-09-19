@@ -1,3 +1,5 @@
+/** Formulario de nueva contraseña; llama a resetPassword. */
+
 'use client'
 
 import { useActionState } from 'react'

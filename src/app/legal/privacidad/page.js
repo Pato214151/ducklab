@@ -1,3 +1,5 @@
+/** Política de privacidad y tratamiento de datos. */
+
 import LegalLayout from '@/components/LegalLayout';
 
 export const metadata = { title: 'Política de Privacidad | Ducklab' };

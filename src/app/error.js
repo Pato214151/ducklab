@@ -1,3 +1,5 @@
+/** Pantalla de error de una página (con botón para reintentar). */
+
 'use client'
 
 import Link from 'next/link'

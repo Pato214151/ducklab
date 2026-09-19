@@ -1,3 +1,8 @@
+/**
+ * Panel admin: monitoreo de todos los sistemas y clientes. Se refresca
+ * solo cada 20 s (AutoRefresh).
+ */
+
 import { redirect } from 'next/navigation'
 import { getAdminOverview } from '@/lib/db'
 import { requireAdmin } from '@/lib/session'

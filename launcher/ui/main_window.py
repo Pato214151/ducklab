@@ -1,3 +1,14 @@
+"""
+Biblioteca del launcher (estilo Steam): lista de apps a la izquierda y
+ficha de la app seleccionada a la derecha.
+
+El botón principal cambia según el estado de la app (_state):
+  open    → sistema web: se abre en el navegador embebido (QtWebEngine)
+  install → descarga el .zip (InstallWorker, en otro hilo) y lo instala
+  update  → la versión del portal es distinta a la instalada
+  play    → abre el .exe instalado
+"""
+
 import os
 import sys
 import json
@@ -98,6 +109,7 @@ class LibraryItem(QFrame):
 
 
 class MainWindow(QWidget):
+    """Biblioteca + ficha + navegador embebido."""
     logout_signal = pyqtSignal()
 
     def __init__(self, api_client, user_data=None):
@@ -299,6 +311,7 @@ class MainWindow(QWidget):
 
     # ─────────────────────── Lógica ───────────────────────
     def load_apps(self, apps):
+        """Pinta la lista de apps que llegó del portal."""
         self.apps = apps or []
         while self.list_layout.count() > 1:
             item = self.list_layout.takeAt(0)
@@ -326,6 +339,7 @@ class MainWindow(QWidget):
         self._select_app(self.apps[0])
 
     def _select_app(self, app):
+        """Muestra la ficha de la app elegida."""
         self.current = app
         for it in self.items:
             it.set_active(it.app.get('id') == app.get('id'))
@@ -357,6 +371,7 @@ class MainWindow(QWidget):
         self._update_buttons()
 
     def _state(self, app):
+        """Estado de la app: 'open', 'install', 'update' o 'play'."""
         if app.get('type') == 'online':
             return 'open'
         # Escritorio: el instalador vive en external_url (GitHub Releases)
@@ -484,6 +499,7 @@ class MainWindow(QWidget):
             self.secondary_btn.hide()
 
     def _primary_action(self):
+        """Acción del botón principal según el estado."""
         if not self.current:
             return
         state = self._state(self.current)
@@ -497,6 +513,7 @@ class MainWindow(QWidget):
             self._launch()
 
     def _secondary_action(self):
+        """Abre en el navegador real (web) o la carpeta instalada (escritorio)."""
         if not self.current:
             return
         if self._state(self.current) == 'open':
@@ -521,6 +538,7 @@ class MainWindow(QWidget):
         set_library_dir(chosen if chosen else default)
 
     def _install(self):
+        """Lanza la descarga + instalación en segundo plano."""
         url = self._install_url(self.current)
         if not url:
             QMessageBox.warning(self, 'Sin instalador',
@@ -572,6 +590,7 @@ class MainWindow(QWidget):
         self._update_buttons()
 
     def _launch(self):
+        """Abre el ejecutable instalado."""
         m = get_manifest(self.current['id']) or {}
         exe = m.get('exe_path')
         if exe and os.path.exists(exe):

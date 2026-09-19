@@ -1,3 +1,8 @@
+/**
+ * Server Actions de autenticación: login (con límite de intentos por IP),
+ * logout y recuperación de contraseña por correo.
+ */
+
 'use server'
 
 import { redirect } from 'next/navigation'
@@ -9,6 +14,7 @@ import { createSession, deleteSession, getSession } from '@/lib/session'
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit'
 import { sendPasswordResetEmail } from '@/lib/email'
 
+/** Valida credenciales, crea la sesión y lleva al dashboard. */
 export async function login(state, formData) {
   const hdrs = await headers()
   const ip = hdrs.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
@@ -48,11 +54,16 @@ export async function login(state, formData) {
   redirect('/dashboard')
 }
 
+/** Cierra la sesión. */
 export async function logout() {
   await deleteSession()
   redirect('/login')
 }
 
+/**
+ * Envía el enlace de recuperación. Siempre responde lo mismo para no
+ * revelar qué correos existen.
+ */
 export async function requestPasswordReset(state, formData) {
   // Sin límite, un atacante puede inundar un buzón ajeno con correos de reset
   // (y quemar la cuota de Resend). Mismo mensaje neutro que el resto del flujo.
@@ -93,6 +104,7 @@ export async function requestPasswordReset(state, formData) {
   }
 }
 
+/** Cambia la contraseña con un token válido. */
 export async function resetPassword(state, formData) {
   const validated = ResetPasswordSchema.safeParse({
     token: formData.get('token'),

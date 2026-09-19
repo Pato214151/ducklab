@@ -1,3 +1,5 @@
+/** Política de cookies. */
+
 import LegalLayout from '@/components/LegalLayout';
 
 export const metadata = { title: 'Política de Cookies | Ducklab' };

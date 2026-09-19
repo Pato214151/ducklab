@@ -1,3 +1,8 @@
+/**
+ * Esquemas zod que validan los formularios (login, tickets, mensajes,
+ * recuperar contraseña y altas del admin).
+ */
+
 import { z } from 'zod'
 
 // Nota: .trim() va ANTES de las validaciones para que se recorte primero

@@ -1,3 +1,8 @@
+"""
+Biblioteca de apps instaladas. Cada app vive en <biblioteca>/<id>/ con un
+manifest.json que guarda la versión instalada y la ruta del .exe.
+"""
+
 import os
 import json
 import zipfile
@@ -15,17 +20,20 @@ def library_dir():
 
 
 def set_library_dir(path):
+    """Guarda la carpeta elegida para la biblioteca."""
     s = _load_settings()
     s['library'] = path
     _save_settings(s)
 
 
 def library_is_set():
+    """True si el usuario ya eligió carpeta."""
     return bool(_load_settings().get('library'))
 
 
 # ───────────────────────── Apps instaladas ─────────────────────────
 def get_app_dir(app_id):
+    """Carpeta de una app dentro de la biblioteca."""
     return os.path.join(library_dir(), str(app_id))
 
 
@@ -47,10 +55,12 @@ def get_installed_apps():
 
 
 def is_app_installed(app_id):
+    """True si la app tiene manifest."""
     return any(a.get('id') == app_id for a in get_installed_apps())
 
 
 def installed_version(app_id):
+    """Versión instalada según el manifest."""
     for a in get_installed_apps():
         if a.get('id') == app_id:
             return a.get('installed_version')
@@ -58,6 +68,7 @@ def installed_version(app_id):
 
 
 def get_manifest(app_id):
+    """Lee el manifest.json de una app."""
     path = os.path.join(get_app_dir(app_id), 'manifest.json')
     try:
         with open(path, 'r', encoding='utf-8') as f:
@@ -67,6 +78,7 @@ def get_manifest(app_id):
 
 
 def save_manifest(app_id, manifest):
+    """Escribe el manifest.json de una app."""
     app_dir = get_app_dir(app_id)
     os.makedirs(app_dir, exist_ok=True)
     with open(os.path.join(app_dir, 'manifest.json'), 'w', encoding='utf-8') as f:

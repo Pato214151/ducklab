@@ -1,3 +1,5 @@
+/** Página /demo (el contenido está en DemoContent). */
+
 import DemoContent from './DemoContent';
 
 export const metadata = {

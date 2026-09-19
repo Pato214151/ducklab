@@ -1,3 +1,5 @@
+/** Conversación de un ticket: mensajes y formulario de respuesta. */
+
 'use client'
 
 import { useActionState, useEffect, useRef } from 'react'

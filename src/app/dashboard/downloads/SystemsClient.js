@@ -1,3 +1,5 @@
+/** Lista de aplicaciones del cliente con sus versiones descargables. */
+
 'use client'
 
 import Link from 'next/link'

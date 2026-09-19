@@ -1,9 +1,16 @@
+/**
+ * Lógica de proxy de Next.js (antes "middleware") para las rutas protegidas.
+ * Sin sesión no deja entrar a /dashboard (manda a /login) y con sesión
+ * no deja volver a /login.
+ */
+
 import { NextResponse } from 'next/server'
 import { decrypt } from '@/lib/session'
 import { cookies } from 'next/headers'
 
 const protectedRoutes = ['/dashboard']
 
+/** Decide si deja pasar, o redirige, según la cookie de sesión. */
 export async function proxy(request) {
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route))

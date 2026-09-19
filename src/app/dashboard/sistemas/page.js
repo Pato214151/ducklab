@@ -1,3 +1,8 @@
+/**
+ * Mis Sistemas: los sistemas del cliente con su estado en vivo
+ * (en línea / con errores / sin conexión) y el enlace al launcher.
+ */
+
 import Link from 'next/link';
 import { Download, Monitor, Globe, ArrowUpRight } from 'lucide-react';
 import { requireAuth } from '@/lib/session';

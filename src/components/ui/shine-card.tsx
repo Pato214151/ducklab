@@ -1,3 +1,5 @@
+/** Tarjeta con un brillo que sigue al cursor. */
+
 'use client'
 
 import { cn } from '@/lib/utils'

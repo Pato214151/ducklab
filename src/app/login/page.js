@@ -1,3 +1,5 @@
+/** Página /login del portal de clientes. */
+
 import Link from 'next/link';
 import { Lock, Zap, BarChart3 } from 'lucide-react';
 import LoginForm from './LoginForm';

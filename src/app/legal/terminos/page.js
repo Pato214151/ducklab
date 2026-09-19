@@ -1,3 +1,5 @@
+/** Términos y condiciones del servicio. */
+
 import LegalLayout from '@/components/LegalLayout';
 
 export const metadata = { title: 'Términos y Condiciones | Ducklab' };

@@ -1,3 +1,5 @@
+/** Pie de página del sitio público (bilingüe). */
+
 'use client';
 import Link from 'next/link';
 import { Mail, Phone, MapPin } from 'lucide-react';

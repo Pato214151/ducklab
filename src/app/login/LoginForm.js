@@ -1,3 +1,5 @@
+/** Formulario de login; llama a la Server Action `login` y muestra sus errores. */
+
 'use client'
 
 import { useActionState } from 'react'

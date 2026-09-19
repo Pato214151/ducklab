@@ -1,3 +1,8 @@
+/*
+ * Estilos globales del sitio: variables de color, tipografía y utilidades
+ * compartidas (ej. .glass).
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

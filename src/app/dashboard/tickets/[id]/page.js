@@ -1,3 +1,5 @@
+/** Detalle de un ticket (servidor): carga el ticket y el usuario actual. */
+
 import { notFound } from 'next/navigation'
 import { requireAuth } from '@/lib/session'
 import { getTicketById } from '@/lib/db'

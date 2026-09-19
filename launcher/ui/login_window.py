@@ -1,3 +1,8 @@
+"""
+Pantalla de login del launcher. La primera vez pide la URL del portal;
+después, correo y contraseña. Emite login_successful al entrar.
+"""
+
 import os
 import sys
 from PyQt5.QtWidgets import (
@@ -10,6 +15,7 @@ from PyQt5.QtGui import QFont, QPixmap
 from config import DUCK_PNG, is_server_url_set, set_server_url, DEFAULT_SERVER_URL
 
 class LoginWindow(QWidget):
+    """Formulario de configuración del servidor + login."""
     login_successful = pyqtSignal()
 
     def __init__(self, api_client):
@@ -103,6 +109,7 @@ class LoginWindow(QWidget):
         self.setLayout(layout)
 
     def _save_server_url(self):
+        """Valida y guarda la URL del portal."""
         url = self.server_url_input.text().strip()
         if not url:
             return
@@ -131,6 +138,7 @@ class LoginWindow(QWidget):
                     item.widget().deleteLater()
 
     def _setup_login_form(self):
+        """Paso 2: formulario de correo y contraseña."""
         layout = self.layout()
         if layout is None:
             layout = QVBoxLayout()
@@ -215,6 +223,7 @@ class LoginWindow(QWidget):
         layout.addWidget(card)
 
     def _do_login(self):
+        """Llama al login del API y muestra el error si falla."""
         email = self.email_input.text().strip()
         password = self.pass_input.text()
 

@@ -1,3 +1,5 @@
+/** Artículo del blog (/blog/:slug). Se genera estático en el build. */
+
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Check } from 'lucide-react';
@@ -5,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { posts, getPost } from '../posts';
 
+/** Lista los slugs para pre-generar cada artículo. */
 export function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }));
 }

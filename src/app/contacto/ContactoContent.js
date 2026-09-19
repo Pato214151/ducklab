@@ -1,3 +1,5 @@
+/** Contenido de /contacto: canales de contacto (WhatsApp, correo). */
+
 'use client';
 import { MessageCircle, Mail, MapPin } from 'lucide-react';
 import Navbar from '@/components/Navbar';

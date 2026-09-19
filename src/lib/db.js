@@ -1,3 +1,12 @@
+/**
+ * Capa de datos única que usa todo el portal.
+ *
+ * Si hay DATABASE_URL y Postgres responde, usa db-pg.js; si no, cae a
+ * db-json.js (un archivo data/db.json). Cada función exportada pasa por
+ * backend(nombre), que espera la conexión y elige el motor, así las páginas
+ * nunca saben cuál se está usando.
+ */
+
 import 'server-only'
 import * as jsonDb from './db-json'
 
@@ -90,6 +99,7 @@ export const getAuditLog = backend('getAuditLog')
 export const saveSystemBackup = backend('saveSystemBackup')
 export const getLatestBackupMeta = backend('getLatestBackupMeta')
 
+/** True si se está usando Postgres. */
 export async function isDbReady() {
   await pgPromise
   return USE_PG

@@ -1,3 +1,5 @@
+/** Título de sección reutilizable (etiqueta + título + subtítulo). */
+
 export default function SectionTitle({ overline, title, accent, subtitle, tone = 'dark' }) {
   const light = tone === 'light';
   return (

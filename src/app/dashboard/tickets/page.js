@@ -1,3 +1,5 @@
+/** Soporte: lista de tickets del cliente. */
+
 import { requireAuth } from '@/lib/session'
 import { getTicketsByClient } from '@/lib/db'
 import TicketsClient from './TicketsClient'

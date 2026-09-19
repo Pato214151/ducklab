@@ -1,3 +1,8 @@
+/**
+ * Página "cómo trabajamos": consulta gratuita → lo construimos → instalación y
+ * capacitación, con enlace a WhatsApp.
+ */
+
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';

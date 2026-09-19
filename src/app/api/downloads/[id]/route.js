@@ -1,3 +1,8 @@
+/**
+ * GET /api/downloads/:id: descarga un instalador. Solo su dueño (o un
+ * admin) puede bajarlo y la ruta del archivo nunca sale de data/files.
+ */
+
 import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/session'
 import { getDownloadById } from '@/lib/db'

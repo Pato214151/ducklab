@@ -1,3 +1,5 @@
+/** Planes y precios del servicio. */
+
 'use client';
 import Link from 'next/link';
 import { Globe, Laptop, Rocket, Crown, Check, MessageCircle } from 'lucide-react';

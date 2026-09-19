@@ -1,3 +1,5 @@
+/** Pantalla de error cuando falla el layout raíz (último recurso). */
+
 'use client'
 
 // Red de seguridad de último recurso: captura errores incluso en el layout raíz.

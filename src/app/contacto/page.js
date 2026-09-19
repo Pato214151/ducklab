@@ -1,3 +1,5 @@
+/** Página /contacto (el contenido está en ContactoContent). */
+
 import ContactoContent from './ContactoContent';
 
 export const metadata = {

@@ -1,3 +1,5 @@
+/** POST /api/auth/logout: borra la cookie de sesión. */
+
 import { NextResponse } from 'next/server'
 import { deleteSession } from '@/lib/session'
 

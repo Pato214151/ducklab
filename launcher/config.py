@@ -1,3 +1,8 @@
+"""
+Rutas y ajustes del launcher. Todo se guarda en %LOCALAPPDATA%\Ducklab
+(settings.json y la biblioteca de apps), no junto al .exe.
+"""
+
 import os
 import sys
 

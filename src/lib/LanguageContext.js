@@ -1,8 +1,14 @@
+/**
+ * Idioma de la web pública (es/en). Se detecta del navegador y se recuerda
+ * en localStorage. Uso: const { lang, toggleLang } = useLanguage().
+ */
+
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const LanguageContext = createContext(null);
 
+/** Provee el idioma actual a toda la app. */
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState('en');
 
@@ -31,6 +37,7 @@ export function LanguageProvider({ children }) {
   );
 }
 
+/** Hook para leer/cambiar el idioma. */
 export function useLanguage() {
   const ctx = useContext(LanguageContext);
   if (!ctx) throw new Error('useLanguage must be used within LanguageProvider');

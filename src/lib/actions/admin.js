@@ -1,3 +1,8 @@
+/**
+ * Server Actions de la página de detalle de un sistema (solo admin):
+ * licencia, errores, runbook, último commit de GitHub y API key.
+ */
+
 'use server'
 
 import { revalidatePath } from 'next/cache'
@@ -5,6 +10,7 @@ import { requireAdmin } from '@/lib/session'
 import { resolveError, updateSystem, updateSystemFromGit, regenerateSystemApiKey, getSystemById, updateSystemCommit, setSystemLicense } from '@/lib/db'
 import { recordAudit } from '@/lib/audit'
 
+/** Activa o desactiva la licencia del sistema (lo consulta /api/license). */
 export async function toggleLicenseAction(formData) {
   const session = await requireAdmin()
   const systemId = Number(formData.get('systemId'))
@@ -17,6 +23,7 @@ export async function toggleLicenseAction(formData) {
   revalidatePath(`/dashboard/admin/systems/${systemId}`)
 }
 
+/** Marca un error reportado por el sistema como resuelto. */
 export async function resolveErrorAction(formData) {
   const session = await requireAdmin()
   const systemId = Number(formData.get('systemId'))
@@ -28,6 +35,7 @@ export async function resolveErrorAction(formData) {
   revalidatePath(`/dashboard/admin/systems/${systemId}`)
 }
 
+/** Guarda el runbook (instrucciones de soporte) del sistema. */
 export async function saveRunbookAction(formData) {
   const session = await requireAdmin()
   const systemId = Number(formData.get('systemId'))
@@ -39,6 +47,7 @@ export async function saveRunbookAction(formData) {
   revalidatePath(`/dashboard/admin/systems/${systemId}`)
 }
 
+/** Trae el último commit del repo público en GitHub. */
 export async function refreshFromGitAction(formData) {
   await requireAdmin()
   const systemId = Number(formData.get('systemId'))
@@ -72,6 +81,7 @@ export async function refreshFromGitAction(formData) {
   revalidatePath(`/dashboard/admin/systems/${systemId}`)
 }
 
+/** Crea una API key nueva (la anterior deja de funcionar). */
 export async function regenerateApiKeyAction(formData) {
   const session = await requireAdmin()
   const systemId = Number(formData.get('systemId'))

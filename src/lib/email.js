@@ -1,3 +1,9 @@
+/**
+ * Correos transaccionales con Resend: recuperación de contraseña y alertas
+ * de error crítico (una técnica al admin y otra tranquilizadora al cliente).
+ * Sin RESEND_API_KEY no envía nada, solo lo escribe en consola.
+ */
+
 import 'server-only'
 
 const SHELL = (inner) =>
@@ -34,6 +40,7 @@ async function sendEmail({ to, subject, html }) {
   }
 }
 
+/** Envía el enlace para restablecer la contraseña (válido 1 hora). */
 export async function sendPasswordResetEmail(to, resetLink) {
   return sendEmail({
     to,

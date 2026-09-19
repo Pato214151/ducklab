@@ -1,3 +1,12 @@
+"""
+Ducklab Launcher: app de escritorio (tipo Steam) para los clientes.
+
+Flujo: si ya hay sesión guardada abre la biblioteca; si no, muestra el
+login. La biblioteca lista los sistemas del cliente (/api/my-apps): los web
+se abren en un navegador embebido y los de escritorio se descargan, instalan,
+actualizan y abren desde aquí.
+"""
+
 import os
 import sys
 import json
@@ -17,6 +26,7 @@ from lib.api import APIClient
 
 
 class LauncherApp(QMainWindow):
+    """Ventana principal: alterna entre la pantalla de login y la biblioteca."""
     def __init__(self):
         super().__init__()
         self.api = APIClient()
@@ -48,6 +58,7 @@ class LauncherApp(QMainWindow):
         self._show_main()
 
     def _show_main(self):
+        """Carga los datos del usuario y muestra la biblioteca."""
         # Datos reales del usuario desde la API
         me = self.api.get_me() or {}
         user = {
@@ -66,11 +77,13 @@ class LauncherApp(QMainWindow):
         self._load_apps()
 
     def _load_apps(self):
+        """Pide al portal las apps del cliente y las pinta."""
         # /api/my-apps devuelve los sistemas del cliente (con descargas y estado).
         apps = self.api.get_my_apps()
         self.main_widget.load_apps(apps or [])
 
     def _on_logout(self):
+        """Cierra sesión y vuelve al login."""
         self.api.logout()
         self.stack.removeWidget(self.main_widget)
         self.main_widget = None
@@ -78,6 +91,7 @@ class LauncherApp(QMainWindow):
 
 
 def main():
+    """Configura Qt (OpenGL compartido, DPI, icono) y abre el launcher."""
     # QtWebEngine (navegador embebido) EXIGE compartir contexto OpenGL antes de
     # crear la app. Se setea siempre aunque el navegador se cargue después (lazy).
     QApplication.setAttribute(Qt.AA_ShareOpenGLContexts)

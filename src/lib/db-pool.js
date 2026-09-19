@@ -1,3 +1,8 @@
+/**
+ * Pool de conexiones a PostgreSQL (se crea una sola vez). Usa SSL salvo en
+ * localhost. Si no conecta devuelve null y el portal sigue con el JSON.
+ */
+
 import 'server-only'
 
 const DATABASE_URL = process.env.DATABASE_URL
@@ -5,6 +10,7 @@ const DATABASE_URL = process.env.DATABASE_URL
 let pool = null
 let connected = false
 
+/** Devuelve el pool (lo crea y prueba con SELECT 1 la primera vez). */
 export async function getPool() {
   if (pool) return pool
   try {
@@ -31,12 +37,14 @@ export function isPgConnected() {
   return connected
 }
 
+/** Ejecuta una consulta SQL con parámetros. */
 export async function query(text, params) {
   const p = await getPool()
   if (!p) throw new Error('PostgreSQL not connected')
   return p.query(text, params)
 }
 
+/** Cierra el pool (lo usan los tests). */
 export async function closePool() {
   if (pool) {
     await pool.end()

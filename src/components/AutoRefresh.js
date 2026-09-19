@@ -1,3 +1,5 @@
+/** Componente invisible que refresca los datos de la página cada N segundos. */
+
 'use client'
 
 import { useEffect } from 'react'

@@ -1,3 +1,5 @@
+/** Página /portafolio (el contenido está en PortfolioContent). */
+
 import PortfolioContent from './PortfolioContent';
 
 export const metadata = {

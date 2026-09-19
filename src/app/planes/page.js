@@ -1,3 +1,5 @@
+/** Página /planes (el contenido está en PlanesContent). */
+
 import PlanesContent from './PlanesContent';
 
 export const metadata = {

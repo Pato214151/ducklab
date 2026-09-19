@@ -1,3 +1,5 @@
+/** Plantilla común de las páginas legales. */
+
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 

@@ -1,3 +1,5 @@
+/** Portafolio: proyectos realizados con su stack y enlaces. */
+
 'use client';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
