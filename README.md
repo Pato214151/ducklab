@@ -4,6 +4,10 @@
 
 Cada cliente tiene su propia cuenta con acceso a sus aplicaciones, descargas seguras, soporte técnico y gestión de pagos. Como Steam, pero para sistemas POS y software a medida en Colombia.
 
+**Demo:** [ducklab.onrender.com](https://ducklab.onrender.com)
+
+![Página de inicio de Ducklab](docs/screenshots/ducklab-home.png)
+
 ---
 
 ## Stack
@@ -99,6 +103,24 @@ mi-plataforma/
 | `/dashboard/tickets/[id]` | Detalle del ticket | Sí |
 | `/dashboard/payments` | Historial de pagos | Sí |
 | `/api/downloads/[id]` | Descarga de archivos | Sí |
+
+---
+
+## Seguridad
+
+- **Sesión:** JWT (jose) en cookie `HttpOnly` + `Secure` + `SameSite=Lax`, no en `localStorage`, para que un XSS no pueda robar la sesión.
+- **Rate limiting** en el login y en las APIs de telemetría y respaldo.
+- **Autorización por recurso:** cada cliente solo ve sus propias descargas, tickets y pagos; las rutas de administración están protegidas aparte.
+- **APIs máquina a máquina** (telemetría, respaldo, licencia) con una API key propia por sistema, no con la sesión del usuario.
+- **Webhook de GitHub** verificado con firma HMAC comparada en tiempo constante; si no hay secreto configurado, la ruta rechaza la petición (*fail-closed*).
+- **Cabeceras:** CSP, HSTS, X-Frame-Options, nosniff, Referrer-Policy y Permissions-Policy (`next.config.mjs`).
+- **Sin secretos en el repositorio:** la configuración va en `.env.local` (ignorado por git); `.env.example` solo trae valores de ejemplo. Las credenciales de la tabla de arriba son de prueba.
+
+## Pruebas
+
+```bash
+npm test        # Vitest
+```
 
 ---
 
