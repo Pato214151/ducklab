@@ -36,7 +36,7 @@ const content = {
     h1a: 'Software that powers', h1accent: 'real business.',
     sub: 'POS systems, desktop apps, web platforms and AI automation. Designed, built and maintained for your business.',
     ctaProjects: 'View projects', ctaTalk: "Let's talk about your idea",
-    stats: [{ k: '+5', v: 'Years of experience' }, { k: '100%', v: 'Projects in production' }, { k: '24/7', v: 'Direct support' }],
+    stats: [{ k: '6', v: 'Systems built' }, { k: '100%', v: 'Custom-built code' }, { k: '24/7', v: 'Direct support' }],
     aboutOverline: 'About us', aboutTitle: 'Custom software,', aboutAccent: 'built with you',
     aboutBody: "I turn your business's real needs into digital tools that actually work. Direct contact, no middlemen: you talk to the person who builds it. Every project is custom-built and backed by ongoing support.",
     values: [
@@ -80,7 +80,7 @@ const content = {
     h1a: 'Software que impulsa negocios', h1accent: 'reales.',
     sub: 'Sistemas POS, apps de escritorio, plataformas web y automatización con IA. Diseñadas, construidas y mantenidas para tu negocio.',
     ctaProjects: 'Ver proyectos', ctaTalk: 'Hablemos de tu idea',
-    stats: [{ k: '+5', v: 'Años de experiencia' }, { k: '100%', v: 'Proyectos en producción' }, { k: '24/7', v: 'Soporte directo' }],
+    stats: [{ k: '6', v: 'Sistemas construidos' }, { k: '100%', v: 'Código a medida' }, { k: '24/7', v: 'Soporte directo' }],
     aboutOverline: 'Quiénes somos', aboutTitle: 'Software a medida,', aboutAccent: 'hecho contigo',
     aboutBody: 'Convierto las necesidades reales de tu negocio en herramientas digitales que funcionan. Trato directo, sin intermediarios: hablas con quien programa. Cada proyecto se construye a tu medida y queda respaldado con soporte continuo.',
     values: [

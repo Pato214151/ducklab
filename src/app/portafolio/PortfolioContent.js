@@ -10,13 +10,14 @@ import { useLanguage } from '@/lib/LanguageContext';
 const content = {
   en: {
     badge: 'Portfolio',
-    h1a: 'Three systems,', h1accent: 'real businesses,', h1b: 'daily use.',
-    sub: "I don't build tutorials. Here's the architecture, the stack, and the real screens behind three production systems I designed, shipped, and still maintain.",
+    h1a: 'Six projects,', h1accent: 'real problems,', h1b: 'real fixes.',
+    sub: "I don't build tutorials. Three of these systems are used every day by real businesses; the other three are where I pushed into testing, real-time audio and end-to-end TypeScript. Each one shows the stack, the architecture and what went wrong along the way.",
     ctaGithub: 'GitHub', ctaLinkedin: 'LinkedIn', ctaStore: 'Live store',
-    liveLabel: 'live', activeLabel: 'active project',
+    liveLabel: 'live', activeLabel: 'active project', lessonsLabel: 'What went wrong — and how I fixed it',
     projects: [
       {
         id: 'raloz',
+        lessons: [["Invoice emails never arrived", "Render blocks outbound SMTP on its servers. Moved sending to Brevo's HTTP API, then fixed empty PDFs with a seek(0) before encoding."], ["Payments were silently lost", "If the MercadoPago webhook failed I still answered OK, so it never retried. Now errors return 500 so it retries, and I get an alert."], ["Blank screen after every deploy", "Old JS files no longer existed and the server answered with index.html. Now missing build files return a clean 404 and the view reloads once."]],
         eyebrow: '01 — Live production system',
         name: 'Raloz',
         tag: 'live',
@@ -31,7 +32,7 @@ const content = {
         since: '2023 — daily production use since 2025',
         links: [
           { label: 'Live store', href: 'https://ralozcolsas.com' },
-          { label: 'Showcase repo', href: 'https://github.com/Pato214151/raloz-showcase' },
+          { label: 'Source on GitHub', href: 'https://github.com/Pato214151/raloz-web-public' },
         ],
         images: [
           { src: '/images/portfolio/raloz-hero.jpg', alt: 'Raloz storefront hero section' },
@@ -41,6 +42,7 @@ const content = {
       },
       {
         id: 'ducklab',
+        lessons: [["Error emails leaked the internals", "Critical-error emails included full stack traces. Removed them and dropped 'unsafe-eval' from the CSP."], ["The 3D laptop froze on Safari 13", "A media-query API didn't exist there and the whole animation crashed. Added a small helper with a fallback."], ["The hero drained phone batteries", "The animation ran at 60 fps forever. Now it sleeps when idle: from ~120 repaints every 2 s to 0."]],
         eyebrow: '02 — Software distribution platform',
         name: 'Ducklab',
         tag: 'active',
@@ -61,6 +63,7 @@ const content = {
       },
       {
         id: 'pocitos',
+        lessons: [["Two cashiers, the same receipt number", "Simultaneous sales could grab the same number. A lock per series keeps numbering consecutive."], ["PINs stored in plain text", "A startup migration re-hashes existing PINs with bcrypt, without recreating any user."]],
         eyebrow: '03 — Desktop POS, in daily use',
         name: 'Pocitos Azufrados',
         tag: 'live',
@@ -68,7 +71,8 @@ const content = {
         detail: "It's a Python/Tkinter/SQLite app with role-based access for admins, co-admins, and cashiers, plus a Flask-connected kitchen module so orders show up where the food actually gets made.",
         points: [
           'Atomic transactions and thread-safe receipt numbering — no double-charged tabs at a busy bar',
-          'Validated with a pytest suite and a script covering 34 automated integrity checkpoints',
+          'Validated with a pytest suite and a script that simulates a full day of operation',
+          "The club's website, in the same repo, gets 6,000+ views every 28 days",
           "Licensed and monitored through Ducklab's portal — the two projects share real infrastructure",
         ],
         stack: ['Python', 'Tkinter', 'SQLite', 'Flask'],
@@ -77,21 +81,25 @@ const content = {
         images: [{ src: '/images/portfolio/pocitos-site.jpg', alt: 'Los Pocitos Azufrados, the resort whose bar runs this POS' }],
         note: "This shows the resort itself, not the POS screens — the app is protected by a license check tied to Ducklab, so its interface isn't publicly screenshottable. That license flow is real: this project can't even boot without checking in first.",
       },
+      {"id": "landscape", "eyebrow": "04 — Admin system for a client (anonymized)", "name": "Landscape Admin", "tag": "active", "summary": "Invoicing, receivables, payments and bank records for a landscaping company in the US. The client's name and data are replaced with a fictional one: \"Acme Landscape\".", "detail": "I wrote the business rules before the code and fixed three design mistakes from Raloz on day one: money as NUMERIC, one payment covering several invoices, and balances that are computed, never stored.", "points": ["Unit and integration tests with pytest against real PostgreSQL, with coverage in GitHub Actions", "Frontend and API ship in a single Docker image so the session cookie stays HttpOnly and SameSite=Lax", "In production the app refuses to start without DATABASE_URL or JWT_SECRET_KEY"], "stack": ["Flask", "React", "TypeScript", "PostgreSQL", "pytest", "Docker"], "since": "2026 — in development", "links": [{"label": "Source on GitHub", "href": "https://github.com/Pato214151/landscape-admin"}], "images": [], "lessons": [["A retry that made things worse", "A wrong DB password plus automatic retries looked like brute force to Supabase, which blocked connections. Now only transient errors are retried."], ["Tests that passed without testing", "If Postgres didn't start in CI, 60 integration tests were skipped and the build stayed green. Now a missing DB fails the build."]]},
+      {"id": "pengos", "eyebrow": "05 — Real-time voice translation", "name": "Pengos", "tag": "active", "summary": "A desktop overlay that listens to game audio, transcribes it with Whisper and translates it live with Llama through the Groq API, so I don't miss what English-speaking teammates say.", "detail": "It's a pipeline: system audio → voice detection → 300 ms buffer → transcription → hallucination filters → translation → an always-on-top overlay that doesn't steal focus from the game.", "points": ["Adaptive throttling: each HTTP 429 multiplies the wait by 1.6 (up to 8 s) and every success brings it back down", "A ~500-term gaming glossary fixes common mishears and translates exact matches without calling the model", "Dedicated tests for false positives, voice detection under load and API cost"], "stack": ["Python", "PyQt5", "Groq API", "webrtcvad", "pytest"], "since": "2026 — personal project", "links": [{"label": "Source on GitHub", "href": "https://github.com/Pato214151/pengos"}], "images": [], "lessons": [["Whisper made up sentences", "On silence it wrote things like \"thanks for watching\". A filter drops those, odd alphabets, repeats and prompt echoes."]]},
+      {"id": "sonyduck", "eyebrow": "06 — End-to-end TypeScript practice", "name": "SonYDuck", "tag": "active", "summary": "A Spotify-style music app: real player, your own MP3 uploads and importing your liked songs from Spotify.", "detail": "Express + Prisma + PostgreSQL on the backend with routes → services → data layers, and React + Vite + TypeScript on the front.", "points": ["Spotify connection through OAuth PKCE, so no client secret lives in the browser", "Imports up to 2,000 liked songs without duplicating artists, albums or tracks", "Helmet, restricted CORS, per-route rate limiting and JWT with refresh tokens"], "stack": ["Node.js", "Express", "Prisma", "React", "TypeScript"], "since": "2026 — practice project", "links": [{"label": "Source on GitHub", "href": "https://github.com/Pato214151/sonyduck"}], "images": [], "lessons": [["I wanted to download my liked songs", "Spotify's API only returns metadata, never the audio, so it can't be downloaded or converted. I import the data and let you upload your own MP3s."]]},
     ],
     closingTitle: 'Open to remote full-stack & backend roles.',
-    closingBody: "Three years of solo ownership taught me the parts of the job that don't show up in a tutorial: auth that survives an audit, migrations that don't wake anyone up at 3am, and a CI pipeline that catches problems before customers do. Happy to walk through any of the code above in an interview.",
+    closingBody: "Building and maintaining these systems on my own, end to end, taught me the parts of the job that don't show up in a tutorial: auth that survives an audit, migrations that don't wake anyone up at 3am, and a CI pipeline that catches problems before customers do. Happy to walk through any of the code above in an interview.",
     closingSkills: ['Python', 'JavaScript', 'TypeScript', 'SQL', 'Flask', 'React', 'Node.js', 'PostgreSQL', 'JWT / OAuth', 'pytest', 'Docker', 'GitHub Actions'],
     closingEmail: 'Email me', closingLinkedin: 'LinkedIn',
   },
   es: {
     badge: 'Portafolio',
-    h1a: 'Tres sistemas,', h1accent: 'negocios reales,', h1b: 'uso diario.',
-    sub: 'No construyo tutoriales. Esta es la arquitectura, el stack y las pantallas reales detrás de tres sistemas en producción que diseñé, construí y todavía mantengo.',
+    h1a: 'Seis proyectos,', h1accent: 'problemas reales,', h1b: 'soluciones reales.',
+    sub: 'No construyo tutoriales. Tres de estos sistemas los usan negocios reales todos los días; los otros tres son donde me metí con pruebas, audio en tiempo real y TypeScript de punta a punta. Cada uno muestra el stack, la arquitectura y lo que salió mal en el camino.',
     ctaGithub: 'GitHub', ctaLinkedin: 'LinkedIn', ctaStore: 'Tienda en vivo',
-    liveLabel: 'en vivo', activeLabel: 'proyecto activo',
+    liveLabel: 'en vivo', activeLabel: 'proyecto activo', lessonsLabel: 'Lo que salió mal y cómo lo arreglé',
     projects: [
       {
         id: 'raloz',
+        lessons: [["Los correos de factura nunca llegaban", "Render bloquea el SMTP de salida. Pasé el envío a la API HTTP de Brevo y arreglé los PDF vacíos con un seek(0) antes de codificar."], ["Pagos que se perdían en silencio", "Si el webhook de MercadoPago fallaba, yo igual respondía OK y no reintentaba. Ahora respondo 500 para que reintente y me llega un aviso."], ["Pantalla en blanco después de cada despliegue", "Los JS viejos ya no existían y el servidor respondía con index.html. Ahora esos archivos dan 404 limpio y la vista se recarga una vez."]],
         eyebrow: '01 — Sistema en producción',
         name: 'Raloz',
         tag: 'live',
@@ -106,7 +114,7 @@ const content = {
         since: '2023 — en producción diaria desde 2025',
         links: [
           { label: 'Tienda en vivo', href: 'https://ralozcolsas.com' },
-          { label: 'Repo showcase', href: 'https://github.com/Pato214151/raloz-showcase' },
+          { label: 'Código en GitHub', href: 'https://github.com/Pato214151/raloz-web-public' },
         ],
         images: [
           { src: '/images/portfolio/raloz-hero.jpg', alt: 'Hero de la tienda de Raloz' },
@@ -116,6 +124,7 @@ const content = {
       },
       {
         id: 'ducklab',
+        lessons: [["Los correos de error filtraban el código", "Los correos de errores críticos traían la traza completa. La quité y saqué 'unsafe-eval' de la CSP."], ["El portátil 3D se congelaba en Safari 13", "Una función para detectar el tamaño de pantalla no existía ahí y tumbaba la animación. Hice un adaptador con respaldo."], ["La página gastaba batería sin hacer nada", "La animación corría a 60 fps para siempre. Ahora se duerme en reposo: de ~120 repintados cada 2 s a 0."]],
         eyebrow: '02 — Plataforma de distribución de software',
         name: 'Ducklab',
         tag: 'active',
@@ -136,6 +145,7 @@ const content = {
       },
       {
         id: 'pocitos',
+        lessons: [["Dos cajeros, el mismo número de recibo", "Las ventas simultáneas podían tomar el mismo número. Un bloqueo por serie mantiene la numeración consecutiva."], ["PIN guardados en texto plano", "Una migración al arrancar convierte los PIN existentes a hash bcrypt, sin recrear usuarios."]],
         eyebrow: '03 — POS de escritorio, en uso diario',
         name: 'Pocitos Azufrados',
         tag: 'live',
@@ -143,7 +153,8 @@ const content = {
         detail: 'Es una app en Python/Tkinter/SQLite con acceso por roles para administradores, co-admins y cajeros, más un módulo de cocina conectado por Flask para que los pedidos aparezcan donde realmente se prepara la comida.',
         points: [
           'Transacciones atómicas y numeración de recibos thread-safe — ninguna cuenta cobrada dos veces en un bar a tope',
-          'Validado con una suite de pytest y un script que cubre 34 puntos de integridad automatizados',
+          'Validado con una suite de pytest y un script que simula un día completo de operación',
+          'La página web del club, en el mismo repo, supera las 6.000 visualizaciones cada 28 días',
           'Licenciado y monitoreado a través del portal de Ducklab — los dos proyectos comparten infraestructura real',
         ],
         stack: ['Python', 'Tkinter', 'SQLite', 'Flask'],
@@ -152,9 +163,12 @@ const content = {
         images: [{ src: '/images/portfolio/pocitos-site.jpg', alt: 'Los Pocitos Azufrados, el resort cuyo bar corre este POS' }],
         note: 'Esto muestra el resort en sí, no las pantallas del POS — la app está protegida por una validación de licencia contra Ducklab, así que su interfaz no es capturable públicamente. Ese flujo de licencia es real: este proyecto ni siquiera arranca sin validar primero.',
       },
+      {"id": "landscape", "eyebrow": "04 — Sistema administrativo para un cliente (anonimizado)", "name": "Landscape Admin", "tag": "active", "summary": "Facturación, cartera, pagos y bancos para una empresa de paisajismo en Estados Unidos. El nombre y los datos del cliente están reemplazados por uno ficticio: \"Acme Landscape\".", "detail": "Escribí las reglas del negocio antes del código y corregí de entrada tres errores de diseño de Raloz: dinero en NUMERIC, un pago que cubre varias facturas y saldos que se calculan, nunca se guardan.", "points": ["Pruebas unitarias y de integración con pytest contra PostgreSQL real, con cobertura en GitHub Actions", "Frontend y API en una sola imagen Docker para que la cookie de sesión siga siendo HttpOnly y SameSite=Lax", "En producción la app no arranca sin DATABASE_URL ni JWT_SECRET_KEY"], "stack": ["Flask", "React", "TypeScript", "PostgreSQL", "pytest", "Docker"], "since": "2026 — en desarrollo", "links": [{"label": "Código en GitHub", "href": "https://github.com/Pato214151/landscape-admin"}], "images": [], "lessons": [["Un reintento que empeoró todo", "Una contraseña mala más reintentos automáticos parecieron fuerza bruta y Supabase bloqueó las conexiones. Ahora solo reintento errores pasajeros."], ["Pruebas que pasaban sin probar nada", "Si Postgres no levantaba en CI, 60 pruebas se saltaban y el build salía verde. Ahora la falta de base hace fallar el build."]]},
+      {"id": "pengos", "eyebrow": "05 — Traducción de voz en tiempo real", "name": "Pengos", "tag": "active", "summary": "Un overlay de escritorio que escucha el audio del juego, lo transcribe con Whisper y lo traduce en vivo con Llama a través de la API de Groq, para no perderme lo que dicen mis compañeros en inglés.", "detail": "Es un pipeline: audio del sistema → detección de voz → buffer de 300 ms → transcripción → filtros anti-alucinación → traducción → un overlay siempre visible que no le quita el foco al juego.", "points": ["Throttling adaptativo: cada HTTP 429 multiplica la espera por 1,6 (hasta 8 s) y cada acierto la reduce", "Un glosario de ~500 términos de juegos corrige errores típicos y traduce directo, sin llamar al modelo", "Pruebas para falsos positivos, detección de voz bajo carga y costo de la API"], "stack": ["Python", "PyQt5", "API de Groq", "webrtcvad", "pytest"], "since": "2026 — proyecto personal", "links": [{"label": "Código en GitHub", "href": "https://github.com/Pato214151/pengos"}], "images": [], "lessons": [["Whisper inventaba frases", "Con silencio escribía cosas como \"thanks for watching\". Un filtro descarta esas frases, alfabetos raros, repeticiones y ecos del prompt."]]},
+      {"id": "sonyduck", "eyebrow": "06 — Práctica de TypeScript de punta a punta", "name": "SonYDuck", "tag": "active", "summary": "Una app de música estilo Spotify: reproductor real, subida de tus propios MP3 e importación de tus canciones con \"Me gusta\" desde Spotify.", "detail": "Express + Prisma + PostgreSQL en el backend con capas rutas → servicios → datos, y React + Vite + TypeScript en el frontend.", "points": ["Conexión con Spotify por OAuth PKCE, sin guardar un client secret en el navegador", "Importa hasta 2.000 canciones con \"Me gusta\" sin duplicar artistas, álbumes ni canciones", "Helmet, CORS restringido, rate limiting por ruta y JWT con refresh tokens"], "stack": ["Node.js", "Express", "Prisma", "React", "TypeScript"], "since": "2026 — proyecto de práctica", "links": [{"label": "Código en GitHub", "href": "https://github.com/Pato214151/sonyduck"}], "images": [], "lessons": [["Quería descargar mis \"Me gusta\"", "La API de Spotify solo entrega datos, nunca el audio, así que no se puede descargar ni convertir. Importo los datos y dejo subir tus propios MP3."]]},
     ],
     closingTitle: 'Abierto a roles remotos de full-stack y backend.',
-    closingBody: 'Tres años de dueño único de estos proyectos me enseñaron las partes del trabajo que no salen en un tutorial: auth que sobrevive una auditoría, migraciones que no despiertan a nadie a las 3am, y un pipeline de CI que atrapa problemas antes que los clientes. Encantado de repasar cualquiera de estos códigos en una entrevista.',
+    closingBody: 'Construir y mantener estos sistemas yo solo, de principio a fin, me enseñó las partes del trabajo que no salen en un tutorial: auth que sobrevive una auditoría, migraciones que no despiertan a nadie a las 3am, y un pipeline de CI que atrapa problemas antes que los clientes. Encantado de repasar cualquiera de estos códigos en una entrevista.',
     closingSkills: ['Python', 'JavaScript', 'TypeScript', 'SQL', 'Flask', 'React', 'Node.js', 'PostgreSQL', 'JWT / OAuth', 'pytest', 'Docker', 'GitHub Actions'],
     closingEmail: 'Escríbeme', closingLinkedin: 'LinkedIn',
   },
@@ -223,13 +237,13 @@ export default function PortfolioContent() {
             </div>
 
             {/* Imágenes */}
-            <div className={`mb-10 grid gap-4 ${p.images.length > 1 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+            {p.images.length > 0 && (<div className={`mb-10 grid gap-4 ${p.images.length > 1 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
               {p.images.map((img) => (
                 <div key={img.src} className="overflow-hidden rounded-2xl border border-black/[0.08] bg-[#0b0b0c] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.5)]">
                   <img src={img.src} alt={img.alt} loading="lazy" className="h-full w-full object-cover" />
                 </div>
               ))}
-            </div>
+            </div>)}
 
             {p.note && (
               <p className={`mb-10 rounded-xl border-l-2 border-[#db1f2e] px-5 py-4 text-sm leading-relaxed ${
@@ -255,6 +269,19 @@ export default function PortfolioContent() {
                     </li>
                   ))}
                 </ul>
+                {p.lessons && (
+                  <div className="mt-8">
+                    <p className={`mb-4 font-mono text-[10.5px] uppercase tracking-[0.2em] ${i % 2 === 1 ? 'text-gray-500' : 'text-[#8a8a91]'}`}>{t.lessonsLabel}</p>
+                    <div className="space-y-3">
+                      {p.lessons.map(([problem, fix]) => (
+                        <div key={problem} className={`rounded-xl border-l-2 border-[#db1f2e] px-4 py-3 ${i % 2 === 1 ? 'bg-white/[0.04]' : 'bg-black/[0.03]'}`}>
+                          <p className={`text-sm font-semibold ${i % 2 === 1 ? 'text-white' : 'text-[#0b0b0c]'}`}>{problem}</p>
+                          <p className={`mt-1 text-sm leading-relaxed ${i % 2 === 1 ? 'text-gray-400' : 'text-[#56565d]'}`}>{fix}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className={`rounded-2xl border p-5 ${i % 2 === 1 ? 'border-white/10 bg-white/[0.04]' : 'border-black/[0.08] bg-white/70'}`}>

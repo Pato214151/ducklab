@@ -124,6 +124,27 @@ npm test        # Vitest
 
 ---
 
+
+---
+
+## Lo que salió mal (y cómo lo arreglé)
+
+**La URL del servidor estaba escrita en el código.**
+El launcher de escritorio tenía la dirección del servidor fija. Si cambiaba de servidor, tocaba recompilar y reenviar el programa a cada cliente. Ahora se configura la primera vez que se abre y queda guardada.
+
+**Los errores críticos filtraban información.**
+Los correos de error que me llegaban incluían la traza completa del código. Si un correo terminaba en el lugar equivocado, revelaba cómo está hecho el sistema por dentro. Los quité y también endurecí la política de seguridad (saqué `unsafe-eval`).
+
+**El portátil 3D se congelaba en algunos iPhone.**
+En Safari 13 no existe una función que usaba para detectar el tamaño de pantalla. Fallaba y la animación del portátil se quedaba congelada a medio abrir. Hice un pequeño adaptador que usa la función vieja cuando la nueva no existe.
+
+**La página gastaba batería sin hacer nada.**
+La animación del inicio corría a 60 cuadros por segundo para siempre, incluso cuando nadie la tocaba. En el celular eso es batería y calor. Ahora se detiene cuando el portátil queda quieto y solo despierta cuando hay interacción. Lo medí: de unos 120 repintados cada 2 segundos a 0.
+
+**Webhooks que fallan cerrados.**
+Si el secreto del webhook de GitHub no está configurado, la ruta rechaza todo en vez de aceptar sin verificar. Es preferible que algo deje de funcionar a que funcione de forma insegura.
+
+
 ## Licencia
 
 Uso privado — Ducklab © 2026
