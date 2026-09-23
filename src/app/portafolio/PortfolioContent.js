@@ -7,12 +7,17 @@ import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import { useLanguage } from '@/lib/LanguageContext';
 
+// Orden de aparición: Pocitos primero porque es el sistema que más se usa a diario.
+// La numeración de cada "eyebrow" se recalcula con este orden al pintar.
+const ORDER = ['pocitos', 'raloz', 'ducklab', 'landscape', 'pengos', 'sonyduck'];
+const byOrder = (a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id);
+
 const content = {
   en: {
     badge: 'Portfolio',
     h1a: 'Six projects,', h1accent: 'real problems,', h1b: 'real fixes.',
     sub: "I don't build tutorials. Three of these systems are used every day by real businesses; the other three are where I pushed into testing, real-time audio and end-to-end TypeScript. Each one shows the stack, the architecture and what went wrong along the way.",
-    ctaGithub: 'GitHub', ctaLinkedin: 'LinkedIn', ctaStore: 'Live store',
+    ctaGithub: 'GitHub', ctaLinkedin: 'LinkedIn', ctaStore: 'Live store', ctaCV: 'Download CV',
     liveLabel: 'live', activeLabel: 'active project', lessonsLabel: 'What went wrong — and how I fixed it',
     projects: [
       {
@@ -94,7 +99,7 @@ const content = {
     badge: 'Portafolio',
     h1a: 'Seis proyectos,', h1accent: 'problemas reales,', h1b: 'soluciones reales.',
     sub: 'No construyo tutoriales. Tres de estos sistemas los usan negocios reales todos los días; los otros tres son donde me metí con pruebas, audio en tiempo real y TypeScript de punta a punta. Cada uno muestra el stack, la arquitectura y lo que salió mal en el camino.',
-    ctaGithub: 'GitHub', ctaLinkedin: 'LinkedIn', ctaStore: 'Tienda en vivo',
+    ctaGithub: 'GitHub', ctaLinkedin: 'LinkedIn', ctaStore: 'Tienda en vivo', ctaCV: 'Descargar CV',
     liveLabel: 'en vivo', activeLabel: 'proyecto activo', lessonsLabel: 'Lo que salió mal y cómo lo arreglé',
     projects: [
       {
@@ -211,18 +216,21 @@ export default function PortfolioContent() {
             <a href="https://ralozcolsas.com" target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center rounded-full border border-black/15 bg-white/40 px-8 py-3.5 font-semibold text-[#0b0b0c] transition hover:border-black/30 hover:bg-white/70 sm:w-auto">
               {t.ctaStore}
             </a>
+            <a href="/cv/CV_Julian_Ramirez.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center rounded-full bg-[#db1f2e] px-8 py-3.5 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#ef4444] sm:w-auto">
+              {t.ctaCV}
+            </a>
           </div>
         </div>
       </section>
 
       {/* ───────────────── Proyectos ───────────────── */}
-      {t.projects.map((p, i) => (
+      {[...t.projects].sort(byOrder).map((p, i) => (
         <section key={p.id} id={p.id} className={`px-4 py-20 ${i % 2 === 1 ? 'bg-[#0b0b0c]' : ''}`}>
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className={`mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.3em] ${i % 2 === 1 ? 'text-[#f87171]' : 'text-[#db1f2e]'}`}>
-                  {p.eyebrow}
+                  {p.eyebrow.replace(/^\d+/, String(i + 1).padStart(2, '0'))}
                 </p>
                 <h2 className={`text-4xl font-bold tracking-tight md:text-5xl ${i % 2 === 1 ? 'text-white' : 'text-[#0b0b0c]'}`}>
                   {p.name}

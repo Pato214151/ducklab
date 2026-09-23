@@ -11,6 +11,7 @@ import { useLanguage } from '@/lib/LanguageContext';
 const navLinksByLang = {
   en: [
     { name: 'Home', href: '/' },
+    { name: 'About me', href: '/#sobre-mi' },
     { name: 'How It Works', href: '/demo' },
     { name: 'Pricing', href: '/planes' },
     { name: 'Blog', href: '/blog' },
@@ -19,6 +20,7 @@ const navLinksByLang = {
   ],
   es: [
     { name: 'Inicio', href: '/' },
+    { name: 'Sobre mí', href: '/#sobre-mi' },
     { name: 'Cómo Funciona', href: '/demo' },
     { name: 'Precios', href: '/planes' },
     { name: 'Blog', href: '/blog' },

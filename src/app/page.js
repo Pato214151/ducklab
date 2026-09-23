@@ -1,18 +1,25 @@
 /**
- * Landing pública de Ducklab (bilingüe): hero con el portátil 3D,
- * servicios, proyectos, proceso de trabajo y llamada a la acción.
+ * Landing pública de Ducklab (bilingüe), también portafolio personal de Julian:
+ * hero con foto y CV, sobre mí (empleo / freelance), servicios, proyectos,
+ * proceso de trabajo y llamada a la acción.
  * Los textos de cada idioma están en el objeto `content`.
  */
 
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Receipt, Monitor, Globe, ShoppingCart, Bot, Wrench, Target, MessageSquare, ShieldCheck, Clock, MessageCircle, QrCode, ArrowRight, PenTool, Rocket } from 'lucide-react';
+import { Receipt, Monitor, Globe, ShoppingCart, Bot, Wrench, Target, MessageSquare, ShieldCheck, Clock, MessageCircle, QrCode, ArrowRight, PenTool, Rocket, Download } from 'lucide-react';
+
+// Hoja de vida pública y perfiles, usados en el hero, "Sobre mí" y el cierre.
+const CV_URL = '/cv/CV_Julian_Ramirez.pdf';
+const LINKEDIN = 'https://www.linkedin.com/in/julian-camilo-ramirez-ramirez-783337382/';
+const GITHUB = 'https://github.com/Pato214151';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import DuckMark from '@/components/DuckMark';
 import Laptop3D from '@/components/Laptop3D';
+import Avatar from '@/components/Avatar';
 import { useLanguage } from '@/lib/LanguageContext';
 
 const serviceIcons = [Receipt, Monitor, Globe, ShoppingCart, Bot, MessageCircle, QrCode, Wrench];
@@ -23,8 +30,8 @@ const stepIcons = [MessageCircle, PenTool, Rocket];
 // `url: null` → tarjeta no clickeable (proyecto propio aún no publicado, o
 // esta misma página en el caso de Ducklab).
 const projectMeta = [
-  { img: '/images/proyectos/raloz.jpg', tags: ['Flask', 'React', 'PostgreSQL', 'Payments'], from: '#db1f2e', to: '#7f1d1d', url: 'https://ralozcol-web.pages.dev' },
   { img: '/images/proyectos/pocitos.jpg', tags: ['Python', 'Tkinter', 'SQLite', 'Flask'], from: '#1B6E3A', to: '#0D4020', url: 'https://lospocitosazufrados.com' },
+  { img: '/images/proyectos/raloz.jpg', tags: ['Flask', 'React', 'PostgreSQL', 'Payments'], from: '#db1f2e', to: '#7f1d1d', url: 'https://ralozcol-web.pages.dev' },
   { img: '/images/proyectos/ducklab.jpg', tags: ['Next.js', 'React 19', 'PostgreSQL', 'PyQt5'], from: '#ef4444', to: '#450a0a', url: null },
   { img: '/images/proyectos/sonyduck.jpg', tags: ['React', 'TypeScript', 'Prisma', 'Node.js'], from: '#e11d48', to: '#1f1f23', url: null },
   { img: '/images/proyectos/pengos-landing.jpg', tags: ['Python', 'Groq Whisper', 'Llama', 'WebRTC VAD'], from: '#10b981', to: '#064e3b', url: null },
@@ -32,13 +39,16 @@ const projectMeta = [
 
 const content = {
   en: {
-    badge: 'Custom Software Development',
+    badge: 'Julian Ramírez · Full Stack Developer',
+    available: 'Open to full-time roles and freelance projects',
     h1a: 'Software that powers', h1accent: 'real business.',
     sub: 'POS systems, desktop apps, web platforms and AI automation. Designed, built and maintained for your business.',
-    ctaProjects: 'View projects', ctaTalk: "Let's talk about your idea",
+    ctaProjects: 'View projects', ctaTalk: 'Get a quote', ctaCV: 'Download CV',
     stats: [{ k: '6', v: 'Systems built' }, { k: '100%', v: 'Custom-built code' }, { k: '24/7', v: 'Direct support' }],
-    aboutOverline: 'About us', aboutTitle: 'Custom software,', aboutAccent: 'built with you',
-    aboutBody: "I turn your business's real needs into digital tools that actually work. Direct contact, no middlemen: you talk to the person who builds it. Every project is custom-built and backed by ongoing support.",
+    aboutOverline: 'About me', aboutTitle: 'Julian Ramírez,', aboutAccent: 'Full Stack Developer',
+    aboutBody: "I'm a software developer in Bogotá, Colombia. I finished the Software Development technology program at Politécnico Grancolombiano and I build with Python/Flask, React, TypeScript and PostgreSQL. Ducklab is the name I use for my freelance work: systems that real businesses use every day, like the point of sale at Pocitos Azufrados and Raloz's store. I'm open to joining a team full-time, and I also take freelance projects.",
+    aboutHire: 'For companies', aboutHireBody: 'Looking for a junior developer who has already shipped software to production? Download my CV or find me on LinkedIn.',
+    aboutFreelance: 'For businesses', aboutFreelanceBody: 'Need a system, a website or an automation? Tell me about it; the first consultation is free.',
     values: [
       { t: '100% custom', d: 'No generic templates. Your system, your rules.' },
       { t: 'Direct contact', d: 'You talk to me, not a call center. Clear answers.' },
@@ -58,8 +68,8 @@ const content = {
     portfolioOverline: 'Portfolio', portfolioTitle: 'Real', portfolioAccent: 'projects', portfolioSubtitle: 'Live, production-grade work.',
     filterAll: 'All',
     projects: [
+      { name: 'Pocitos Azufrados', desc: 'Desktop POS system for a club and restaurant, with a real-time kitchen display over the web. Used every day.', cat: 'POS', live: true },
       { name: 'Raloz COL SAS', desc: 'Full e-commerce and POS platform for a school uniform business: admin panel, point of sale and online store with payments.', cat: 'POS', live: true },
-      { name: 'Pocitos Azufrados', desc: 'Desktop POS system for a club and restaurant, with a real-time kitchen display over the web.', cat: 'POS', live: true },
       { name: 'Ducklab', desc: 'This very platform: client portal, secure downloads, licensing, telemetry and a desktop launcher for delivering software.', cat: 'Web', live: true },
       { name: 'SonYDuck', desc: 'Music streaming platform with AI features, playlists and an elegant dark interface.', cat: 'Web', live: false },
       { name: 'Pengos', desc: 'Real-time voice translation overlay for gamers: hear the game in English, see subtitles in Spanish instantly.', cat: 'AI', live: false },
@@ -71,18 +81,21 @@ const content = {
       { n: '03', title: 'Deliver & support', desc: 'Deployment, training and ongoing support from your private portal.' },
     ],
     delivery: 'Delivery time: ', deliveryStrong: '1 to 4 months', deliveryEnd: ' depending on system complexity.',
-    ctaTitle: 'Ready to digitize your business?', ctaSub: 'Check the pricing or message me. First consultation is 100% free.',
+    ctaTitle: 'Hire me or start a project', ctaSub: 'I can join your team or build your system as a freelancer. First consultation is 100% free.',
     ctaPricing2: 'View pricing', ctaContact: 'Contact me',
     capture: 'Screenshot of', builtBy: 'Ducklab', viewLive: 'View live site',
   },
   es: {
-    badge: 'Desarrollo de Software a Medida',
+    badge: 'Julian Ramírez · Desarrollador Full Stack',
+    available: 'Disponible para empleo y proyectos freelance',
     h1a: 'Software que impulsa negocios', h1accent: 'reales.',
     sub: 'Sistemas POS, apps de escritorio, plataformas web y automatización con IA. Diseñadas, construidas y mantenidas para tu negocio.',
-    ctaProjects: 'Ver proyectos', ctaTalk: 'Hablemos de tu idea',
+    ctaProjects: 'Ver proyectos', ctaTalk: 'Cotizar un proyecto', ctaCV: 'Descargar CV',
     stats: [{ k: '6', v: 'Sistemas construidos' }, { k: '100%', v: 'Código a medida' }, { k: '24/7', v: 'Soporte directo' }],
-    aboutOverline: 'Quiénes somos', aboutTitle: 'Software a medida,', aboutAccent: 'hecho contigo',
-    aboutBody: 'Convierto las necesidades reales de tu negocio en herramientas digitales que funcionan. Trato directo, sin intermediarios: hablas con quien programa. Cada proyecto se construye a tu medida y queda respaldado con soporte continuo.',
+    aboutOverline: 'Sobre mí', aboutTitle: 'Julian Ramírez,', aboutAccent: 'desarrollador Full Stack',
+    aboutBody: 'Soy desarrollador de software en Bogotá. Terminé la Tecnología en Desarrollo de Software en el Politécnico Grancolombiano y trabajo con Python/Flask, React, TypeScript y PostgreSQL. Ducklab es el nombre con el que hago mis proyectos freelance: sistemas que negocios reales usan todos los días, como el punto de venta de Pocitos Azufrados y la tienda de Raloz. Estoy disponible para unirme a un equipo como empleado y también tomo proyectos freelance.',
+    aboutHire: 'Para empresas', aboutHireBody: '¿Buscas un desarrollador junior que ya tiene software en producción? Descarga mi hoja de vida o búscame en LinkedIn.',
+    aboutFreelance: 'Para negocios', aboutFreelanceBody: '¿Necesitas un sistema, una página web o una automatización? Cuéntame tu idea; la primera consulta es gratis.',
     values: [
       { t: '100% a medida', d: 'Nada de plantillas genéricas. Tu sistema, tus reglas.' },
       { t: 'Trato directo', d: 'Hablas conmigo, no con un call center. Respuestas claras.' },
@@ -102,8 +115,8 @@ const content = {
     portfolioOverline: 'Portafolio', portfolioTitle: 'Proyectos', portfolioAccent: 'reales', portfolioSubtitle: 'Trabajos reales en producción.',
     filterAll: 'Todos',
     projects: [
+      { name: 'Pocitos Azufrados', desc: 'Sistema POS de escritorio para club y restaurante, con visor de cocina en tiempo real por web. Se usa todos los días.', cat: 'POS', live: true },
       { name: 'Raloz COL SAS', desc: 'Sistema integral para una empresa de uniformes escolares: panel administrativo, POS y tienda pública con pagos en línea.', cat: 'POS', live: true },
-      { name: 'Pocitos Azufrados', desc: 'Sistema POS de escritorio para club y restaurante, con visor de cocina en tiempo real por web.', cat: 'POS', live: true },
       { name: 'Ducklab', desc: 'Esta misma plataforma: portal de clientes, descargas seguras, licencias, telemetría y launcher de escritorio para entregar software.', cat: 'Web', live: true },
       { name: 'SonYDuck', desc: 'Plataforma de música en streaming con funciones de IA, listas de reproducción e interfaz oscura elegante.', cat: 'Web', live: false },
       { name: 'Pengos', desc: 'Overlay de traducción de voz en tiempo real para gamers: escuchas el juego en inglés y ves subtítulos en español al instante.', cat: 'IA', live: false },
@@ -115,7 +128,7 @@ const content = {
       { n: '03', title: 'Entrego y acompaño', desc: 'Despliegue, capacitación y soporte continuo desde tu portal privado.' },
     ],
     delivery: 'Tiempo de entrega: ', deliveryStrong: 'de 1 a 4 meses', deliveryEnd: ' según la complejidad del sistema.',
-    ctaTitle: '¿Listo para digitalizar tu negocio?', ctaSub: 'Mira los precios o escríbeme. La primera consulta es 100% gratuita.',
+    ctaTitle: 'Contrátame o empecemos tu proyecto', ctaSub: 'Puedo unirme a tu equipo o construir tu sistema como freelance. La primera consulta es 100% gratuita.',
     ctaPricing2: 'Ver precios', ctaContact: 'Contáctame',
     capture: 'Captura de', builtBy: 'Ducklab', viewLive: 'Ver sitio en vivo',
   },
@@ -157,10 +170,13 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-col gap-12 lg:grid lg:grid-cols-2 lg:items-center lg:gap-6">
           {/* Titular */}
           <div className="text-center lg:text-left">
-            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[#a1a1aa] backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#db1f2e]" />
-              {t.badge}
-            </span>
+            <div className="flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
+              <Avatar size={44} className="ring-2 ring-[#db1f2e]/60" />
+              <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-[#d4d4d8] sm:text-[11px] sm:tracking-[0.2em] backdrop-blur-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#db1f2e]" />
+                {t.badge}
+              </span>
+            </div>
 
             <h1 className="mt-8 text-4xl font-bold leading-[1.02] tracking-tight sm:text-5xl xl:text-6xl">
               {t.h1a}{' '}
@@ -173,6 +189,11 @@ export default function Home() {
             <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#a1a1aa] lg:mx-0">
               {t.sub}
             </p>
+
+            <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#4ade80]/25 bg-[#4ade80]/[0.07] px-4 py-1.5 text-sm font-medium text-[#bbf7d0]">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#4ade80]" />
+              {t.available}
+            </span>
           </div>
 
           {/* Columna 3D */}
@@ -187,6 +208,10 @@ export default function Home() {
                 {t.ctaProjects}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
               </Link>
+              <a href={CV_URL} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-8 py-3.5 font-semibold text-white backdrop-blur-sm transition hover:border-white/30 hover:bg-white/[0.09] sm:w-auto">
+                {t.ctaCV}
+                <Download className="h-4 w-4" strokeWidth={1.75} />
+              </a>
               <Link href="/contacto" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-8 py-3.5 font-semibold text-white backdrop-blur-sm transition hover:border-white/30 hover:bg-white/[0.09] sm:w-auto">
                 {t.ctaTalk}
                 <MessageCircle className="h-4 w-4" strokeWidth={1.75} />
@@ -201,6 +226,53 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────── Sobre mí ───────────────── */}
+      <section id="sobre-mi" className="px-4 py-24">
+        <div className="mx-auto max-w-5xl">
+          <SectionTitle tone="dark" overline={t.aboutOverline} title={t.aboutTitle} accent={t.aboutAccent} />
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 md:flex-row md:items-start">
+            <Avatar size={128} className="ring-4 ring-[#db1f2e]/40" />
+            <p className="text-center text-lg leading-relaxed text-[#a1a1aa] md:text-left">{t.aboutBody}</p>
+          </div>
+
+          <div className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/[0.08] bg-[#0e0e11] p-7">
+              <h3 className="mb-2 font-semibold text-white">{t.aboutHire}</h3>
+              <p className="mb-5 text-sm leading-relaxed text-[#a1a1aa]">{t.aboutHireBody}</p>
+              <div className="flex flex-wrap gap-3">
+                <a href={CV_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#db1f2e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#ef4444]">
+                  {t.ctaCV} <Download className="h-4 w-4" strokeWidth={1.75} />
+                </a>
+                <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">LinkedIn</a>
+                <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">GitHub</a>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/[0.08] bg-[#0e0e11] p-7">
+              <h3 className="mb-2 font-semibold text-white">{t.aboutFreelance}</h3>
+              <p className="mb-5 text-sm leading-relaxed text-[#a1a1aa]">{t.aboutFreelanceBody}</p>
+              <Link href="/contacto" className="inline-flex items-center gap-2 rounded-full bg-[#db1f2e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#ef4444]">
+                {t.ctaTalk} <MessageCircle className="h-4 w-4" strokeWidth={1.75} />
+              </Link>
+            </div>
+          </div>
+          <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {t.values.map((v, i) => {
+              const Icon = valueIcons[i];
+              return (
+                <div key={v.t} className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0e0e11] p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-[#131316]">
+                  <span className="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-[#db1f2e] transition-transform duration-300 group-hover:scale-x-100" />
+                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-[#db1f2e]">
+                    <Icon className="h-5 w-5" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="mb-1 font-semibold text-white">{v.t}</h3>
+                  <p className="text-sm text-[#a1a1aa]">{v.d}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -375,31 +447,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───────────────── Quiénes somos ───────────────── */}
-      <section className="px-4 py-24">
-        <div className="mx-auto max-w-5xl">
-          <SectionTitle tone="dark" overline={t.aboutOverline} title={t.aboutTitle} accent={t.aboutAccent} />
-          <p className="mx-auto max-w-3xl text-center text-lg leading-relaxed text-[#a1a1aa]">
-            <span className="font-semibold text-white">Ducklab</span> — {t.aboutBody}
-          </p>
-          <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {t.values.map((v, i) => {
-              const Icon = valueIcons[i];
-              return (
-                <div key={v.t} className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0e0e11] p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-[#131316]">
-                  <span className="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-[#db1f2e] transition-transform duration-300 group-hover:scale-x-100" />
-                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-[#db1f2e]">
-                    <Icon className="h-5 w-5" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="mb-1 font-semibold text-white">{v.t}</h3>
-                  <p className="text-sm text-[#a1a1aa]">{v.d}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* ───────────────── CTA final ───────────────── */}
       <section className="relative overflow-hidden px-4 py-12">
         <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0b0b0d] px-6 py-24 text-center text-white">
@@ -408,7 +455,10 @@ export default function Home() {
             <h2 className="text-4xl font-bold tracking-tight md:text-6xl">{t.ctaTitle}</h2>
             <p className="mt-6 text-lg text-[#a1a1aa] md:text-xl">{t.ctaSub}</p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href="/planes" className="inline-flex w-full items-center justify-center rounded-full bg-[#db1f2e] px-8 py-3.5 font-semibold text-white shadow-[0_0_30px_rgba(219,31,46,0.35)] transition hover:bg-[#ef4444] sm:w-auto">
+              <a href={CV_URL} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#db1f2e] px-8 py-3.5 font-semibold text-white shadow-[0_0_30px_rgba(219,31,46,0.35)] transition hover:bg-[#ef4444] sm:w-auto">
+                {t.ctaCV} <Download className="h-4 w-4" strokeWidth={1.75} />
+              </a>
+              <Link href="/planes" className="inline-flex w-full items-center justify-center rounded-full border border-white/20 px-8 py-3.5 font-semibold text-white transition hover:bg-white/10 sm:w-auto">
                 {t.ctaPricing2}
               </Link>
               <Link href="/contacto" className="inline-flex w-full items-center justify-center rounded-full border border-white/20 px-8 py-3.5 font-semibold text-white transition hover:bg-white/10 sm:w-auto">
